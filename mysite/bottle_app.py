@@ -1,15 +1,9 @@
 # A very simple Bottle Hello World app for you to get started with...
-from bottle import default_app, route, template, static_file
+from bottle import default_app, route, template, static_file, run
 
 @route('/')
 def index():
-    """Home page"""
-
-    info = {'title': 'Welcome Home!',
-            'content': 'Hello World'
-            }
-
-    return template('simple.tpl', info)
+    return template('simple.tpl')
 
 @route('/data/<filename>')
 def server_static(filename):
@@ -33,3 +27,5 @@ def server_static(filename):
 
 application = default_app()
 
+if __name__ == "__main__":
+    run(host='localhost', port=8080, debug=True)
