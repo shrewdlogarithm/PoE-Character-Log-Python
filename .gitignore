@@ -6,7 +6,7 @@
 .profile
 .python*
 README.txt
-.vimrc
+.vim*
 .virtualenvs/
 
 data/*.json
