@@ -1,0 +1,81 @@
+body {
+    background-color: black;
+    color: gold;
+    font-family:'Fontin SmallCaps Regular';
+    white-space: nowrap;
+}
+
+a {
+    color: inherit !important;
+}
+
+h3 {
+    margin: 0px;
+    margin-top: 10px;
+}
+
+td {
+    padding: 0px;
+    padding-right: 40px;
+}
+
+.gemI, .gemI:link, .gemI:visited {
+    color: blue;
+}
+
+.gemS, .gemS:link, .gemS:visited {
+    color: red;
+}
+
+.gemD, .gemD:link, .gemD:visited {
+    color: green;
+}
+
+.notable {
+    display:inline-block;
+    color: lightyellow;
+}
+
+.notable:link, .notable:visited {
+    color: lightyellow;
+}
+
+.itemquality0 {
+    display:inline-block;
+    color: white;
+}
+
+.itemquality1 {
+    display:inline-block;
+    color: blue;
+}
+
+.itemquality2 {
+    display:inline-block;
+    color: yellow;
+}
+.itemquality3 {
+    display:inline-block;
+    color: orange;
+}
+
+.socketr {
+    border: 1px solid red;
+    border-radius: 10%;
+    font-weight: bolder;
+    color: red;
+}
+
+.socketg {
+    border: 1px solid green;
+    border-radius: 10%;
+    font-weight: bolder;
+    color: green;
+}
+
+.socketb {
+    border: 1px solid blue;
+    border-radius: 10%;
+    font-weight: bolder;
+    color: blue;
+}
