@@ -173,13 +173,13 @@ def makexml(chardata):
     items.setAttribute("activeItemSet","1")
     items.setAttribute("useSecondWeaponSet","nil")
     pob.appendChild(items)
-    skills = root.createElement("Skills")
-    pob.appendChild(skills)
+    #skills = root.createElement("Skills")
+    #pob.appendChild(skills)
+    #skillset = {}
     itemdb = {}
     lastset = {}
     itn = 1
     isn = 1
-    skillset = {}
     for e in range(0,len(chardata)):
         level = chardata[e]["character"]["level"]
         lastnodes = ",".join(str(node) for node in chardata[e-1]["passives"])
@@ -192,6 +192,7 @@ def makexml(chardata):
             id.setAttribute("treeVersion",POBTREEVER)
             id.setAttribute("classId",str(chardata[e]["character"]["classId"]))
             tree.appendChild(id)   
+        """
         oldskillset = skillset
         skillset = {}
         gemgroups = buildskills(chardata[e]["items"])  
@@ -211,6 +212,7 @@ def makexml(chardata):
                 skill.setAttribute("label",f"{level}-{slot}")
                 skill.setAttribute("enabled","true")                        
                 skills.appendChild(skill)
+        """
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
