@@ -4,7 +4,7 @@ from charparser import checkchanges, makexml, writelogs
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
-response = session.get('https://pathofexile.com') 
+response = session.get('https://api.pathofexile.com') 
 
 toscan = ["mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"]
 
