@@ -6,25 +6,36 @@ session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
 response = session.get('https://api.pathofexile.com') 
 
-toscan = ["mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"]
+settings = {
+    "toscan": ["mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"],
+    "shortsleep": 1,    # min. seconds between API requests - avoid hitting the rate-limit
+    "longsleep": 120,   # min. seconds between scans and after errors such as PoE being down etc.
+    "maxlevel": 90,     # ignore characters at this level or higher
+    "minlevel": 10      # ignore new characters above this level
+}
 
 accountdb = "data/accountdb.json"
 accounts = {}
-
-shortsleep = 1
-longsleep = 120
 
 def mywait(mytime):
     print (f"Sleeping for {mytime}s")
     time.sleep(mytime)
 
 while 1==1:
+
+    if os.path.exists("settings.json"):
+        with open("settings.json") as json_file:
+            settings = json.load(json_file)
+    else:
+        with open("settings.json", 'w') as json_file:
+            json.dump(settings, json_file, indent=4)
+
     chars = []
     if os.path.exists(accountdb):
         with open(accountdb) as json_file:
             accounts = json.load(json_file)
 
-    for account in toscan:
+    for account in settings["toscan"]:
         try:
             print(f"Scanning Account {account}")
             if account not in accounts:
@@ -32,7 +43,7 @@ while 1==1:
             apichars = session.get(f"https://api.pathofexile.com/character-window/get-characters?accountName={account}&realm=pc")
             apichardb = apichars.json()
             for apichar in apichardb:
-                if "level" in apichar and apichar["level"] < 90:
+                if "level" in apichar and apichar["level"] < settings["maxlevel"]:
                     if apichar["name"] in accounts[account]:
                         if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
@@ -44,8 +55,8 @@ while 1==1:
                             else:
                                 print (f'{apichar["name"]} ({apichar["level"]}) has been active but no history - ignoring')
                     else:
-                        if apichar["level"] > 10:
-                            print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level 10 - ignoring')
+                        if apichar["level"] > settings["minlevel"]:
+                            print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
                         else:
                             print (f'{apichar["name"]} ({apichar["level"]}) is new!')
                             chars.append({
@@ -56,10 +67,10 @@ while 1==1:
         except Exception as e:
             track = traceback.format_exc()
             print(track)
-            print("Waiting {longsleep}s before continuing")
-            mywait(longsleep)
+            print('Waiting {settings["longsleep"]}s before continuing')
+            mywait(settings["longsleep"])
         else:
-            mywait(shortsleep)
+            mywait(settings["shortsleep"])
 
     for char in chars:
         try:
@@ -102,12 +113,12 @@ while 1==1:
         except Exception as e:
             track = traceback.format_exc()
             print(track)
-            print("Waiting {longsleep}s before continuing")
-            mywait(longsleep)
+            print('Waiting {settings["longsleep"]}s before continuing')
+            mywait(settings["longsleep"])
         else:
-            mywait(shortsleep)
+            mywait(settings["shortsleep"])
 
     with open(accountdb, 'w') as json_file:
         json.dump(accounts, json_file, indent=4)
 
-    mywait(longsleep)
+    mywait(settings["longsleep"])
