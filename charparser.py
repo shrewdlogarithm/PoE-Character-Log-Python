@@ -104,19 +104,21 @@ def checkchanges(before,after):
     return out
 
 def writelogs(account,char,outp):
-    if not os.path.exists(f"logs/{account}-{char}.html"):
-        with open(f"logs/{account}-{char}.html", 'w') as f:
-            f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
-            f.write(f"Account: {account} - Character: {char}<BR><BR>")
-    if not os.path.exists(f"logs/{account}-{char}.log"):
-        with open(f"logs/{account}-{char}.log", 'w') as f:
-            f.write(f"Account: {account} - Character: {char}\n")
-    with open(f"logs/{account}-{char}.html", 'a') as f:
-        f.write(outp.replace("\n","<BR><BR>"))
-    with open(f"logs/{account}-{char}.log", 'a') as f:
-        outp = re.sub('<[^>]+>', '', outp)
-        f.write(outp)
-        print(outp)
+    if len(outp) > 0 :
+        outp = outp.rstrip()
+        if not os.path.exists(f"logs/{account}-{char}.html"):
+            with open(f"logs/{account}-{char}.html", 'w') as f:
+                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
+                f.write(f"Account: {account} - Character: {char}<BR><BR>")
+        if not os.path.exists(f"logs/{account}-{char}.log"):
+            with open(f"logs/{account}-{char}.log", 'w') as f:
+                f.write(f"Account: {account} - Character: {char}\n")
+        with open(f"logs/{account}-{char}.html", 'a') as f:
+            f.write(outp.replace("\n","<BR><BR>"))
+        with open(f"logs/{account}-{char}.log", 'a') as f:
+            outp = re.sub('<[^>]+>', '', outp)
+            f.write(outp)
+            print(outp)
 
 className = ("Scion","Marauder","Ranger","Witch","Duelist","Templar","Shadow")
 ascendName = (
@@ -173,9 +175,9 @@ def makexml(chardata):
     items.setAttribute("activeItemSet","1")
     items.setAttribute("useSecondWeaponSet","nil")
     pob.appendChild(items)
-    #skills = root.createElement("Skills")
-    #pob.appendChild(skills)
-    #skillset = {}
+    skills = root.createElement("Skills")
+    pob.appendChild(skills)
+    skilldb = []
     itemdb = {}
     lastset = {}
     itn = 1
@@ -192,27 +194,25 @@ def makexml(chardata):
             id.setAttribute("treeVersion",POBTREEVER)
             id.setAttribute("classId",str(chardata[e]["character"]["classId"]))
             tree.appendChild(id)   
-        """
-        oldskillset = skillset
-        skillset = {}
         gemgroups = buildskills(chardata[e]["items"])  
         for slot in gemgroups:
-            skillset[slot] = ""
             skill = root.createElement("Skill")
             for group in gemgroups[slot]:                    
-                for gm in group["gems"]+group["supports"]:
-                    gem = root.createElement("Gem")
-                    gem.setAttribute("level","1")
-                    gem.setAttribute("nameSpec",gm.replace(" Support",""))
-                    gem.setAttribute("quality","0")
-                    gem.setAttribute("enabled","true")
-                    skill.appendChild(gem)
-                    skillset[slot] += gm
-            if slot not in oldskillset or slot not in  skillset or  oldskillset[slot] != skillset[slot]:
-                skill.setAttribute("label",f"{level}-{slot}")
-                skill.setAttribute("enabled","true")                        
-                skills.appendChild(skill)
-        """
+                if len(group["gems"]) > 0:
+                    skillset = " ".join(sorted(group["gems"])) + " " + ",".join(sorted(group["supports"]))
+                    skillset = re.sub('<[^>]+>', '', skillset).replace(" Support","")
+                    if skillset not in skilldb:
+                        skilldb.append(skillset)
+                        for gm in group["gems"]+group["supports"]:
+                            gem = root.createElement("Gem")
+                            gem.setAttribute("level","1")
+                            gem.setAttribute("nameSpec",re.sub('<[^>]+>', '',gm.replace(" Support","")))
+                            gem.setAttribute("quality","0")
+                            gem.setAttribute("enabled","true")
+                            skill.appendChild(gem)
+                        skill.setAttribute("label",f"{level}-{skillset}")
+                        skill.setAttribute("enabled","true")                        
+                        skills.appendChild(skill)
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
