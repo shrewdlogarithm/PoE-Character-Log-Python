@@ -13,6 +13,7 @@ data/*.json
 logs/*.log
 logs/*.html
 pob/*
+settings.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
