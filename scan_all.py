@@ -6,7 +6,7 @@ session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
 response = session.get('https://pathofexile.com') 
 
-toscan = [mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"]
+toscan = ["mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"]
 
 accountdb = "data/accountdb.json"
 accounts = {}
