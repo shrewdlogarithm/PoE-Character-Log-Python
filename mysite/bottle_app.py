@@ -1,5 +1,8 @@
 # A very simple Bottle Hello World app for you to get started with...
-from bottle import default_app, route, template, static_file, run
+from bottle import default_app, route, template, TEMPLATE_PATH, static_file, run
+
+if __name__ == "__main__":
+    TEMPLATE_PATH.append("mysite/")
 
 @route('/')
 def index():
