@@ -7,7 +7,7 @@ session.headers.update({'User-Agent': 'POEClog'})
 response = session.get('https://api.pathofexile.com') 
 
 settings = {
-    "toscan": ["mathil","zizaran","bigducks","cutedog_","yojimoji","steelmage","raizqt","ghazzy","thisisbadger","notscarytime","donthecrown","pohx","nugiyen","octavian0","enki91","thi3n","baker","neversink"],
+    "toscan": [],
     "shortsleep": 1,    # min. seconds between API requests - avoid hitting the rate-limit
     "longsleep": 120,   # min. seconds between scans and after errors such as PoE being down etc.
     "maxlevel": 90,     # ignore characters at this level or higher
