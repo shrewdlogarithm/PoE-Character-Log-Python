@@ -24,6 +24,7 @@ def getchars():
                 if len(summary) > 0:
                     levelfrom = dom.getElementsByTagName("Summary")[0].getAttribute("LevelFrom")
                     levelto = dom.getElementsByTagName("Summary")[0].getAttribute("LevelTo")
+                    league = dom.getElementsByTagName("Summary")[0].getAttribute("League")
                 retval[account].append({
                     "filepath": pobfile,
                     "datapath": datapath,
@@ -34,6 +35,7 @@ def getchars():
                     "classname": classname,
                     "levelfrom": levelfrom,
                     "levelto": levelto,
+                    "league": league,
                     "pcode": base64.b64encode(zlib.compress(dom.toxml().encode('ascii')),altchars=b"-_")
                 })
         except Exception as e:

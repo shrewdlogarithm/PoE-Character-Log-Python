@@ -18,7 +18,7 @@
             <tr><td><h3>Account {{account}}</h3></td></tr>
             % for char in accounts[account]:
                 <tr>
-                    <td>{{char["charname"]}} - {{char["classname"]}}</td>
+                    <td>{{char["charname"]}} - {{char["classname"]}} - {{char["league"]}}</td>
                     <td>{{char["levelfrom"]}}-{{char["levelto"]}}</td>
                     <td><a href={{char["datapath"]}}>JSON</a></td>
                     <td><a href={{char["logpath"]}}>Txt</a></td>

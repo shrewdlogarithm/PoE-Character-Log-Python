@@ -160,6 +160,7 @@ def makexml(chardata):
     summary = root.createElement("Summary")
     summary.setAttribute("LevelFrom",str(chardata[0]["character"]["level"]))
     summary.setAttribute("LevelTo",str(chardata[len(chardata)-1]["character"]["level"]))
+    summary.setAttribute("League",str(chardata[len(chardata)-1]["character"]["league"]))
     pob.appendChild(summary)
     build = root.createElement('Build')
     build.setAttribute("targetVersion","3_0")
