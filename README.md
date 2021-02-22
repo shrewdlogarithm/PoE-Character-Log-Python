@@ -8,7 +8,11 @@ Download the repo and run "scan_all.py" to start scanning
 
 This loops 'forever', scanning selected PoE Accounts and storing their equipment, passive-tree and skills for later use
 
-First-run  creates a "setting.json" file - edit this to specify the accounts you'd like to track (this file is read every time the scanner loops - no-need to restart)
+First-run  creates a "setting.json" file - edit this to...  
+Specify the accounts you'd like to track  
+Change the frequency of scans (be careful not to hit the API rate-limit and remember that more scans = LOTS more data!!)  
+Set the max level to consider a 'new' character (default 10) and the max level to monitor any character (default 90) - again, higher numbers = MORE DATA!!  
+Note: settings.json is read every time the scanner loops - no-need to restart!
 
 ## What it creates ##
 In the 'data' directory you will find  
