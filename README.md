@@ -25,8 +25,6 @@ HTML files - the same information as the LOG files but hyperlinked/colourized
 In the "pob/builds" directory you will find  
 XML - a Path-of-Building-compatible savefile 
 
-Note: you can move this file to your Path of Building "builds' folder OR simple install PoB into the pob directory directly!
-
 ## Other stuff ##
 The "mysite" directory contains a Bottle.py application which creates a webpage summarizing all the accounts/characters tracked  
 This also includes PoB "build codes" which can be pasted into PoB directly  
