@@ -43,11 +43,22 @@ while 1==1:
             apichars = session.get(f"https://api.pathofexile.com/character-window/get-characters?accountName={account}&realm=pc")
             apichardb = apichars.json()
             for apichar in apichardb:
-                if "level" in apichar and apichar["level"] < settings["maxlevel"]:
+                if "level" in apichar and int(apichar["level"]) < int(settings["maxlevel"]):
                     if apichar["name"] in accounts[account]:
                         if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
-                                print (f'{apichar["name"]} ({apichar["level"]}) has been active')
+                                if int(accounts[account][apichar["name"]]["level"]) < int(apichar["level"]):
+                                    print (f'{apichar["name"]} has been rerolled - archiving old character data')
+                                    rrdate = datetime.today().strftime('%Y%m%d%H%M')
+                                    os.rename(f'data/{account}-{apichar["name"]}.json',f'data/{account}-{apichar["name"]}DEL{rrdate}.json')
+                                    if os.path.exists(f'logs/{account}-{apichar["name"]}.log'):
+                                        os.rename(f'logs/{account}-{apichar["name"]}.log',f'logs/{account}-{apichar["name"]}DEL{rrdate}.log')
+                                    if os.path.exists(f'logs/{account}-{apichar["name"]}.html'):
+                                        os.rename(f'logs/{account}-{apichar["name"]}.html',f'logs/{account}-{apichar["name"]}DEL{rrdate}.html')
+                                    if os.path.exists(f'pob/builds/{account}-{apichar["name"]}.xml'):
+                                        os.rename(f'pob/builds/{account}-{apichar["name"]}.xml',f'pob/builds/{account}-{apichar["name"]}DEL{rrdate}.xml')
+                                else:
+                                    print (f'{apichar["name"]} ({apichar["level"]}) has been active')
                                 chars.append({
                                     "account": account,
                                     "char": apichar["name"]
@@ -55,14 +66,14 @@ while 1==1:
                             else:
                                 print (f'{apichar["name"]} ({apichar["level"]}) has been active but no history - ignoring')
                     else:
-                        if apichar["level"] > settings["minlevel"]:
-                            print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
-                        else:
+                        if int(apichar["level"]) < int(settings["minlevel"]):
                             print (f'{apichar["name"]} ({apichar["level"]}) is new!')
                             chars.append({
                                 "account": account,
                                 "char": apichar["name"]
                             })
+                        else:
+                            print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
                     accounts[account][apichar["name"]] = apichar
         except Exception as e:
             track = traceback.format_exc()
@@ -110,6 +121,9 @@ while 1==1:
             with open(dbname, 'w') as json_file:
                 json.dump(chardata, json_file, indent=4, default=str)
 
+            with open(accountdb, 'w') as json_file:
+                json.dump(accounts, json_file, indent=4)
+
         except Exception as e:
             track = traceback.format_exc()
             print(track)
@@ -117,8 +131,5 @@ while 1==1:
             mywait(settings["longsleep"])
         else:
             mywait(settings["shortsleep"])
-
-    with open(accountdb, 'w') as json_file:
-        json.dump(accounts, json_file, indent=4)
 
     mywait(settings["longsleep"])
