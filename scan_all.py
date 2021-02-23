@@ -47,7 +47,7 @@ while 1==1:
                     if apichar["name"] in accounts[account]:
                         if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
-                                if int(accounts[account][apichar["name"]]["level"]) < int(apichar["level"]):
+                                if int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
                                     print (f'{apichar["name"]} has been rerolled - archiving old character data')
                                     rrdate = datetime.today().strftime('%Y%m%d%H%M')
                                     os.rename(f'data/{account}-{apichar["name"]}.json',f'data/{account}-{apichar["name"]}DEL{rrdate}.json')
