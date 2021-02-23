@@ -1,4 +1,4 @@
-import math,base64,json,os,re
+import base64,json
 from xml.dom import minidom 
 
 POBTREEVER = "3_13"
@@ -102,23 +102,6 @@ def checkchanges(before,after):
     for change in showchanges(getskills(before["items"]),getskills(after["items"]),"Unsocketed ","Socketed "):
         out = out + change
     return out
-
-def writelogs(account,char,outp):
-    if len(outp) > 0 :
-        outp = outp.rstrip()
-        if not os.path.exists(f"logs/{account}-{char}.html"):
-            with open(f"logs/{account}-{char}.html", 'w') as f:
-                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
-                f.write(f"Account: {account} - Character: {char}<BR><BR>")
-        if not os.path.exists(f"logs/{account}-{char}.log"):
-            with open(f"logs/{account}-{char}.log", 'w') as f:
-                f.write(f"Account: {account} - Character: {char}\n")
-        with open(f"logs/{account}-{char}.html", 'a') as f:
-            f.write(outp.replace("\n","<BR><BR>"))
-        with open(f"logs/{account}-{char}.log", 'a') as f:
-            outp = re.sub('<[^>]+>', '', outp)
-            f.write(outp)
-            print(outp)
 
 className = ("Scion","Marauder","Ranger","Witch","Duelist","Templar","Shadow")
 ascendName = (
@@ -276,6 +259,6 @@ def maketreelink(char):
     header = [0,0,0,4,int(char["character"]["classId"]),int(char["character"]["ascendancyClass"]),0]
     bhead = bytearray(header)
     for node in char["passives"]:
-        bhead.append(math.floor(node/256))
+        bhead.append(node//256)
         bhead.append(node%256)
     return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + base64.b64encode(bhead,altchars=b"__").decode("utf-8")

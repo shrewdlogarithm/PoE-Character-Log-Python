@@ -1,6 +1,6 @@
 import os,requests,json,time,traceback
 from datetime import datetime
-from charparser import checkchanges, makexml, writelogs
+from charparser import checkchanges, makexml
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
@@ -16,6 +16,23 @@ settings = {
 
 accountdb = "data/accountdb.json"
 accounts = {}
+
+def writelogs(account,char,outp):
+    if len(outp) > 0 :
+        outp = outp.rstrip()
+        if not os.path.exists(f"logs/{account}-{char}.html"):
+            with open(f"logs/{account}-{char}.html", 'w') as f:
+                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
+                f.write(f"Account: {account} - Character: {char}<BR><BR>")
+        if not os.path.exists(f"logs/{account}-{char}.log"):
+            with open(f"logs/{account}-{char}.log", 'w') as f:
+                f.write(f"Account: {account} - Character: {char}\n")
+        with open(f"logs/{account}-{char}.html", 'a') as f:
+            f.write(outp.replace("\n","<BR><BR>"))
+        with open(f"logs/{account}-{char}.log", 'a') as f:
+            outp = re.sub('<[^>]+>', '', outp)
+            f.write(outp)
+            print(outp)
 
 def mywait(mytime):
     print (f"Sleeping for {mytime}s")
