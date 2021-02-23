@@ -6,14 +6,15 @@ POBTREEVER = "3_13"
 
 with open('passive-skill-tree.json') as json_file:
     passivedb = json.load(json_file)
+
 def getpassives(passives):
     ret = []
     for passive in passives:
         if str(passive) in passivedb["nodes"] and "name" in passivedb["nodes"][str(passive)]:
             if "isNotable" in passivedb["nodes"][str(passive)]:
-                ret.append("<a class=notable href=\"https://pathofexile.gamepedia.com/" + passivedb["nodes"][str(passive)]["name"].replace(" ","_") + "\">" + passivedb["nodes"][str(passive)]["name"] + "</a>")
+                ret.append("<a class=notable href=\"https://pathofexile.gamepedia.com/" + passivedb["nodes"][str(passive)]["name"].replace(" ","_") + "\">" + passivedb["nodes"][str(passive)]["name"] + '</a>')
             else:
-                ret.append("<span class=notable>" + passivedb["nodes"][str(passive)]["name"] + "</span>")
+                ret.append("<span class=notable>" + passivedb["nodes"][str(passive)]["name"] + f' [{str(passive)}]</span>')
         else:
             ret.append(f"Unknown passive {passive}")
     return ret
@@ -92,6 +93,14 @@ def showchanges(before, after, bpref, apref):
            ret.append(f"{apref}{aft}\n")
     return ret
 
+def maketreelink(char):
+    header = [0,0,0,4,int(char["character"]["classId"]),int(char["character"]["ascendancyClass"]),0]
+    bhead = bytearray(header)
+    for node in char["passives"]:
+        bhead.append(node//256)
+        bhead.append(node%256)
+    return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + base64.b64encode(bhead,altchars=b"__").decode("utf-8")
+
 def makelogs(account,char,before,after):
     out = ""
     if (before["character"]["level"] != after["character"]["level"]):
@@ -103,7 +112,10 @@ def makelogs(account,char,before,after):
     for change in showchanges(getskills(before["items"]),getskills(after["items"]),"Unsocketed ","Socketed "):
         out = out + change
     if (before["character"]["level"] != after["character"]["level"]):
-        out = out + "Passive Tree <a href=\"" + maketreelink(after) + "\">" + maketreelink(after) + '</a>\n'
+        lasttreelink = maketreelink(before)
+        treelink = maketreelink(after)
+        if lasttreelink != treelink:
+            out = out + "Passive Tree <a href=\"" + treelink  + "\">" + treelink + '</a>\n'
     if len(out) > 0:
         if not os.path.exists(f"logs/{account}-{char}.html"):
             with open(f"logs/{account}-{char}.html", 'w') as f:
@@ -284,11 +296,3 @@ def makexml(account,char,chardata):
                 lastset[iid] = itemno
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
-
-def maketreelink(char):
-    header = [0,0,0,4,int(char["character"]["classId"]),int(char["character"]["ascendancyClass"]),0]
-    bhead = bytearray(header)
-    for node in char["passives"]:
-        bhead.append(node//256)
-        bhead.append(node%256)
-    return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + base64.b64encode(bhead,altchars=b"__").decode("utf-8")
