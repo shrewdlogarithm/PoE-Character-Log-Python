@@ -1,6 +1,6 @@
 import os,requests,json,time,traceback
 from datetime import datetime
-from charparser import checkchanges, makexml
+from charparser import makelogs, makexml, archivedata
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
@@ -16,23 +16,6 @@ settings = {
 
 accountdb = "data/accountdb.json"
 accounts = {}
-
-def writelogs(account,char,outp):
-    if len(outp) > 0 :
-        outp = outp.rstrip()
-        if not os.path.exists(f"logs/{account}-{char}.html"):
-            with open(f"logs/{account}-{char}.html", 'w') as f:
-                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
-                f.write(f"Account: {account} - Character: {char}<BR><BR>")
-        if not os.path.exists(f"logs/{account}-{char}.log"):
-            with open(f"logs/{account}-{char}.log", 'w') as f:
-                f.write(f"Account: {account} - Character: {char}\n")
-        with open(f"logs/{account}-{char}.html", 'a') as f:
-            f.write(outp.replace("\n","<BR><BR>"))
-        with open(f"logs/{account}-{char}.log", 'a') as f:
-            outp = re.sub('<[^>]+>', '', outp)
-            f.write(outp)
-            print(outp)
 
 def mywait(mytime):
     print (f"Sleeping for {mytime}s")
@@ -66,14 +49,7 @@ while 1==1:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
                                 if int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
                                     print (f'{apichar["name"]} has been rerolled - archiving old character data')
-                                    rrdate = datetime.today().strftime('%Y%m%d%H%M')
-                                    os.rename(f'data/{account}-{apichar["name"]}.json',f'data/{account}-{apichar["name"]}DEL{rrdate}.json')
-                                    if os.path.exists(f'logs/{account}-{apichar["name"]}.log'):
-                                        os.rename(f'logs/{account}-{apichar["name"]}.log',f'logs/{account}-{apichar["name"]}DEL{rrdate}.log')
-                                    if os.path.exists(f'logs/{account}-{apichar["name"]}.html'):
-                                        os.rename(f'logs/{account}-{apichar["name"]}.html',f'logs/{account}-{apichar["name"]}DEL{rrdate}.html')
-                                    if os.path.exists(f'pob/builds/{account}-{apichar["name"]}.xml'):
-                                        os.rename(f'pob/builds/{account}-{apichar["name"]}.xml',f'pob/builds/{account}-{apichar["name"]}DEL{rrdate}.xml')
+                                    archivedata(account,apichar["name"])
                                 else:
                                     print (f'{apichar["name"]} ({apichar["level"]}) has been active')
                                 chars.append({
@@ -92,13 +68,16 @@ while 1==1:
                         else:
                             print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
                     accounts[account][apichar["name"]] = apichar
-        except Exception as e:
+        except:
             track = traceback.format_exc()
             print(track)
             print('Waiting {settings["longsleep"]}s before continuing')
             mywait(settings["longsleep"])
         else:
             mywait(settings["shortsleep"])
+
+    with open(accountdb, 'w') as json_file:
+        json.dump(accounts, json_file, indent=4)
 
     for char in chars:
         try:
@@ -127,26 +106,18 @@ while 1==1:
             })
 
             if len(chardata) > 1:
-                changes = checkchanges(chardata[len(chardata)-2], chardata[len(chardata)-1])
-                if (len(changes) > 0):
-                    writelogs(char['account'],char['char'],changes)
-                    
-                    root = makexml(chardata)
-                    with open(f"pob/builds/{char['account']}-{char['char']}.xml", 'w') as f:
-                        f.write(root.toprettyxml(indent ="\t"))
+                if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):                   
+                    root = makexml(char['account'],char['char'],chardata)                    
 
             with open(dbname, 'w') as json_file:
                 json.dump(chardata, json_file, indent=4, default=str)
 
-            with open(accountdb, 'w') as json_file:
-                json.dump(accounts, json_file, indent=4)
-
-        except Exception as e:
+        except:
             track = traceback.format_exc()
             print(track)
             print('Waiting {settings["longsleep"]}s before continuing')
             mywait(settings["longsleep"])
-        else:
-            mywait(settings["shortsleep"])
+
+        mywait(settings["shortsleep"])
 
     mywait(settings["longsleep"])

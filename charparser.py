@@ -1,5 +1,6 @@
-import base64,json
+import base64,json,re,os
 from xml.dom import minidom 
+from datetime import datetime
 
 POBTREEVER = "3_13"
 
@@ -91,7 +92,7 @@ def showchanges(before, after, bpref, apref):
            ret.append(f"{apref}{aft}\n")
     return ret
 
-def checkchanges(before,after):
+def makelogs(account,char,before,after):
     out = ""
     if (before["character"]["level"] != after["character"]["level"]):
         out = out + f'Reached Level {after["character"]["level"]}\n'
@@ -101,7 +102,35 @@ def checkchanges(before,after):
         out = out + change
     for change in showchanges(getskills(before["items"]),getskills(after["items"]),"Unsocketed ","Socketed "):
         out = out + change
-    return out
+    if (before["character"]["level"] != after["character"]["level"]):
+        out = out + "Passive Tree <a href=\"" + maketreelink(after) + "\">" + maketreelink(after) + '</a>\n'
+    if len(out) > 0:
+        if not os.path.exists(f"logs/{account}-{char}.html"):
+            with open(f"logs/{account}-{char}.html", 'w') as f:
+                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
+                f.write(f"Account: {account} - Character: {char}<BR><BR>")
+        if not os.path.exists(f"logs/{account}-{char}.log"):
+            with open(f"logs/{account}-{char}.log", 'w') as f:
+                f.write(f"Account: {account} - Character: {char}\n")
+        with open(f"logs/{account}-{char}.html", 'a') as f:
+            f.write(out.replace("\n","<BR><BR>"))
+        with open(f"logs/{account}-{char}.log", 'a') as f:
+            out = re.sub('<[^>]+>', '', out)
+            f.write(out)
+            print(out)
+        return True
+    else:
+        return False
+
+def archivedata(account,char):
+    rrdate = datetime.today().strftime('%Y%m%d%H%M')
+    os.rename(f'data/{account}-{char}.json',f'data/{account}-{char}DEL{rrdate}.json')
+    if os.path.exists(f'logs/{account}-{char}.log'):
+        os.rename(f'logs/{account}-{char}.log',f'logs/{account}-{char}DEL{rrdate}.log')
+    if os.path.exists(f'logs/{account}-{char}.html'):
+        os.rename(f'logs/{account}-{char}.html',f'logs/{account}-{char}DEL{rrdate}.html')
+    if os.path.exists(f'pob/builds/{account}-{char}.xml'):
+        os.rename(f'pob/builds/{account}-{char}.xml',f'pob/builds/{account}-{char}DEL{rrdate}.xml')
 
 className = ("Scion","Marauder","Ranger","Witch","Duelist","Templar","Shadow")
 ascendName = (
@@ -136,7 +165,7 @@ def getbyname(attrs,attr,name):
             if "name" in at and at["name"] == name:
                 return at["values"][0][0]
 
-def makexml(chardata):
+def makexml(account,char,chardata):
     root = minidom.Document()     
     pob = root.createElement('PathOfBuilding')  
     root.appendChild(pob) 
@@ -253,7 +282,8 @@ def makexml(chardata):
                     items.appendChild(itemset)
                     isn = isn + 1
                 lastset[iid] = itemno
-    return root
+    with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
+        f.write(root.toprettyxml(indent ="\t"))
 
 def maketreelink(char):
     header = [0,0,0,4,int(char["character"]["classId"]),int(char["character"]["ascendancyClass"]),0]
