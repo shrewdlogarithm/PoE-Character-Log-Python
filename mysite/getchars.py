@@ -1,7 +1,6 @@
 import os,base64,zlib,glob
 from xml.dom import minidom
 
-
 def getchars():
     retval = {}
 
@@ -25,19 +24,20 @@ def getchars():
                     levelfrom = dom.getElementsByTagName("Summary")[0].getAttribute("LevelFrom")
                     levelto = dom.getElementsByTagName("Summary")[0].getAttribute("LevelTo")
                     league = dom.getElementsByTagName("Summary")[0].getAttribute("League")
-                retval[account].append({
-                    "filepath": pobfile,
-                    "datapath": datapath,
-                    "logpath": logpath,
-                    "htmlpath": htmlpath,
-                    "account": account,
-                    "charname": charname,
-                    "classname": classname,
-                    "levelfrom": levelfrom,
-                    "levelto": levelto,
-                    "league": league,
-                    "pcode": base64.b64encode(zlib.compress(dom.toxml().encode('ascii')),altchars=b"-_")
-                })
+                if levelto and int(levelto) > 10:
+                    retval[account].append({
+                        "filepath": pobfile,
+                        "datapath": datapath,
+                        "logpath": logpath,
+                        "htmlpath": htmlpath,
+                        "account": account,
+                        "charname": charname,
+                        "classname": classname,
+                        "levelfrom": levelfrom,
+                        "levelto": levelto,
+                        "league": league,
+                        "pcode": base64.b64encode(zlib.compress(dom.toxml().encode('ascii')),altchars=b"-_")
+                    })
         except Exception as e:
             print(e)
     return retval
