@@ -62,6 +62,10 @@ while 1==1:
                         accounts[account][archchar] = accounts[account][apichar["name"]]
                         accounts[account][archchar]["name"] = archchar
                         accounts[account][apichar["name"]] = {}
+                        chars.append({
+                            "account": account,
+                            "char": apichar["name"]
+                        })
                     if "level" in apichar and int(apichar["level"]) < int(settings["maxlevel"]):
                         if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):                                
