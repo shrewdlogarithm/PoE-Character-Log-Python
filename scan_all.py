@@ -76,9 +76,6 @@ while 1==1:
         else:
             mywait(settings["shortsleep"])
 
-    with open(accountdb, 'w') as json_file:
-        json.dump(accounts, json_file, indent=4)
-
     for char in chars:
         try:
             print(f'Scanning Char {char["account"]} - {char["char"]}')
@@ -107,7 +104,7 @@ while 1==1:
 
             if len(chardata) > 1:
                 if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):                   
-                    root = makexml(char['account'],char['char'],chardata)                    
+                    makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
 
             with open(dbname, 'w') as json_file:
                 json.dump(chardata, json_file, indent=4, default=str)
@@ -119,5 +116,8 @@ while 1==1:
             mywait(settings["longsleep"])
 
         mywait(settings["shortsleep"])
+
+    with open(accountdb, 'w') as json_file:
+        json.dump(accounts, json_file, indent=4)
 
     mywait(settings["longsleep"])

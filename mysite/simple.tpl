@@ -12,20 +12,26 @@
     <body>
         <table>
         <tr><td></td><td>Level</td><td>Raw</td><td colspan=2>BuildLog</td><td colspan=2>Path of Building</td><td>Skills</td></tr>
-        % from getchars import getchars
-        % accounts = getchars()
-        % for account in accounts:
-            <tr><td><h3>Account {{account}}</h3></td></tr>
-            % for char in accounts[account]:
-                <tr>
-                    <td>{{char["charname"]}} - {{char["classname"]}} [{{char["league"]}}]</td>
-                    <td>{{char["levelfrom"]}}-{{char["levelto"]}}</td>
-                    <td><a href={{char["datapath"]}}>JSON</a></td>
-                    <td><a href={{char["logpath"]}}>Txt</a></td>
-                    <td><a href={{char["htmlpath"]}}>Web</a></td>
-                    <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
-                    <td><a href={{char["filepath"]}}>XML</a></td>
-                    <td>{{char["skills"]}}</td>
-                </tr>
+        % import os,json
+        % accountdb = "data/accountdb.json"
+        % accounts = {}
+        % if os.path.exists(accountdb):
+        %   with open(accountdb) as json_file:
+        %       accounts = json.load(json_file)
+        %       for account in accounts:
+                    <tr><td><h3>Account {{account}}</h3></td></tr>
+                    % for ch in accounts[account]:
+                    %   char = accounts[account][ch]
+                    %   if "levelfrom" in char and int(char["level"]) > 10:
+                            <tr>
+                                <td>{{char["name"]}} - {{char["class"]}} [{{char["league"]}}]</td>
+                                <td>{{char["levelfrom"]}}-{{char["level"]}}</td>
+                                <td><a href={{f'data/{account}-{ch}.json'}}>JSON</a></td>
+                                <td><a href={{f'logs/{account}-{ch}.log'}}>Txt</a></td>
+                                <td><a href={{f'logs/{account}-{ch}.html'}}>Web</a></td>
+                                <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
+                                <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
+                                <td>{{char["skillset"]}}</td>
+                            </tr>
     </body>
 </html>

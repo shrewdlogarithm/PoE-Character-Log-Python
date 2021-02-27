@@ -1,4 +1,4 @@
-import base64,json,re,os
+import base64,zlib,json,re,os
 from xml.dom import minidom 
 from datetime import datetime
 
@@ -177,15 +177,12 @@ def getbyname(attrs,attr,name):
             if "name" in at and at["name"] == name:
                 return at["values"][0][0]
 
-def makexml(account,char,chardata):
+def makexml(account,char,chardata,accountdb):
     root = minidom.Document()     
     pob = root.createElement('PathOfBuilding')  
     root.appendChild(pob) 
-    summary = root.createElement("Summary")
-    summary.setAttribute("LevelFrom",str(chardata[0]["character"]["level"]))
-    summary.setAttribute("LevelTo",str(chardata[len(chardata)-1]["character"]["level"]))
-    summary.setAttribute("League",str(chardata[len(chardata)-1]["character"]["league"]))
-    pob.appendChild(summary)
+    accountdb["levelfrom"] = chardata[0]["character"]["level"]
+    accountdb["league"] = chardata[len(chardata)-1]["character"]["league"]
     build = root.createElement('Build')
     build.setAttribute("targetVersion","3_0")
     build.setAttribute('level',str(chardata[len(chardata)-1]["character"]["level"]))
@@ -243,7 +240,7 @@ def makexml(account,char,chardata):
                         skill.setAttribute("enabled","true")                        
                         skills.appendChild(skill)
         if len(mainskills) > 0:
-            summary.setAttribute("Skills",re.sub("\[[0-9]\] ","","  ".join(sorted(set(mainskills[0:3]),reverse=True))))
+            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(sorted(set(mainskills[0:3]),reverse=True)))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
@@ -300,5 +297,6 @@ def makexml(account,char,chardata):
                     items.appendChild(itemset)
                     isn = isn + 1
                 lastset[iid] = itemno
+    accountdb["pcode"] = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
