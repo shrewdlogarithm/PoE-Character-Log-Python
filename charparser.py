@@ -220,9 +220,13 @@ def makexml(account,char,chardata):
             id.setAttribute("classId",str(chardata[e]["character"]["classId"]))
             tree.appendChild(id)   
         gemgroups = buildskills(chardata[e]["items"])  
+        mainskills = []
         for slot in gemgroups:
             skill = root.createElement("Skill")
             for group in gemgroups[slot]:                    
+                if (len(group["supports"]) > 1):
+                    for gm in group["gems"]:
+                        mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
                 if len(group["gems"]) > 0:
                     skillset = " ".join(sorted(group["gems"])) + " " + ",".join(sorted(group["supports"]))
                     skillset = re.sub('<[^>]+>', '', skillset).replace(" Support","")
@@ -238,6 +242,8 @@ def makexml(account,char,chardata):
                         skill.setAttribute("label",f"{level}-{skillset}")
                         skill.setAttribute("enabled","true")                        
                         skills.appendChild(skill)
+        if len(mainskills) > 0:
+            summary.setAttribute("Skills",re.sub("\[[0-9]\] ","","  ".join(sorted(set(mainskills[0:3]),reverse=True))))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")

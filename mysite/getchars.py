@@ -24,6 +24,9 @@ def getchars():
                     levelfrom = dom.getElementsByTagName("Summary")[0].getAttribute("LevelFrom")
                     levelto = dom.getElementsByTagName("Summary")[0].getAttribute("LevelTo")
                     league = dom.getElementsByTagName("Summary")[0].getAttribute("League")
+                    if len(league) > 15:
+                        league = league[0:12] + "..."
+                    skills = dom.getElementsByTagName("Summary")[0].getAttribute("Skills")
                 if levelto and int(levelto) > 10:
                     retval[account].append({
                         "filepath": pobfile,
@@ -33,6 +36,7 @@ def getchars():
                         "account": account,
                         "charname": charname,
                         "classname": classname,
+                        "skills": skills,
                         "levelfrom": levelfrom,
                         "levelto": levelto,
                         "league": league,

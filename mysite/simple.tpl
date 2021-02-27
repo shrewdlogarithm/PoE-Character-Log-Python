@@ -11,7 +11,7 @@
     </head>
     <body>
         <table>
-        <tr><td></td><td>Level</td><td>API Data</td><td colspan=2>Logs</td><td colspan=2>Path of Building</td></tr>
+        <tr><td></td><td>Level</td><td>Raw</td><td colspan=2>BuildLog</td><td colspan=2>Path of Building</td><td>Skills</td></tr>
         % from getchars import getchars
         % accounts = getchars()
         % for account in accounts:
@@ -25,6 +25,7 @@
                     <td><a href={{char["htmlpath"]}}>Web</a></td>
                     <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
                     <td><a href={{char["filepath"]}}>XML</a></td>
+                    <td>{{char["skills"]}}</td>
                 </tr>
     </body>
 </html>
