@@ -133,16 +133,6 @@ def makelogs(account,char,before,after):
     else:
         return False
 
-def archivedata(account,char):
-    rrdate = datetime.today().strftime('%Y%m%d%H%M')
-    os.rename(f'data/{account}-{char}.json',f'data/{account}-{char}DEL{rrdate}.json')
-    if os.path.exists(f'logs/{account}-{char}.log'):
-        os.rename(f'logs/{account}-{char}.log',f'logs/{account}-{char}DEL{rrdate}.log')
-    if os.path.exists(f'logs/{account}-{char}.html'):
-        os.rename(f'logs/{account}-{char}.html',f'logs/{account}-{char}DEL{rrdate}.html')
-    if os.path.exists(f'pob/builds/{account}-{char}.xml'):
-        os.rename(f'pob/builds/{account}-{char}.xml',f'pob/builds/{account}-{char}DEL{rrdate}.xml')
-
 className = ("Scion","Marauder","Ranger","Witch","Duelist","Templar","Shadow")
 ascendName = (
     ("None","Ascendant"),

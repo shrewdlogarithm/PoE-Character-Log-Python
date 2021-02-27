@@ -1,6 +1,6 @@
 import os,requests,json,time,traceback
 from datetime import datetime
-from charparser import makelogs, makexml, archivedata
+from charparser import makelogs, makexml
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
@@ -20,6 +20,18 @@ accounts = {}
 def mywait(mytime):
     print (f"Sleeping for {mytime}s")
     time.sleep(mytime)
+
+def archivedata(account,char):
+    rrdate = datetime.today().strftime('%Y%m%d%H%M')
+    if os.path.exists(f'data/{account}-{char}.json'):
+        os.rename(f'data/{account}-{char}.json',f'data/{account}-{char}DEL{rrdate}.json')
+    if os.path.exists(f'logs/{account}-{char}.log'):
+        os.rename(f'logs/{account}-{char}.log',f'logs/{account}-{char}DEL{rrdate}.log')
+    if os.path.exists(f'logs/{account}-{char}.html'):
+        os.rename(f'logs/{account}-{char}.html',f'logs/{account}-{char}DEL{rrdate}.html')
+    if os.path.exists(f'pob/builds/{account}-{char}.xml'):
+        os.rename(f'pob/builds/{account}-{char}.xml',f'pob/builds/{account}-{char}DEL{rrdate}.xml')
+    return f'{char}DEL{rrdate}'
 
 while 1==1:
 
@@ -43,31 +55,33 @@ while 1==1:
             apichars = session.get(f"https://api.pathofexile.com/character-window/get-characters?accountName={account}&realm=pc")
             apichardb = apichars.json()
             for apichar in apichardb:
-                if "level" in apichar and int(apichar["level"]) < int(settings["maxlevel"]):
-                    if apichar["name"] in accounts[account]:
+                if apichar["name"] in accounts[account]:
+                    if "level" in accounts[account][apichar["name"]] and int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
+                        print (f'{apichar["name"]} has been rerolled - archiving old character data')
+                        archchar = archivedata(account,apichar["name"])
+                        accounts[account][archchar] = accounts[account][apichar["name"]]
+                        accounts[account][archchar]["name"] = archchar
+                        accounts[account][apichar["name"]] = {}
+                    if "level" in apichar and int(apichar["level"]) < int(settings["maxlevel"]):
                         if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
-                            if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
-                                if int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
-                                    print (f'{apichar["name"]} has been rerolled - archiving old character data')
-                                    archivedata(account,apichar["name"])
-                                else:
-                                    print (f'{apichar["name"]} ({apichar["level"]}) has been active')
+                            if os.path.exists(f'data/{account}-{apichar["name"]}.json'):                                
+                                print (f'{apichar["name"]} ({apichar["level"]}) has been active')
                                 chars.append({
                                     "account": account,
                                     "char": apichar["name"]
                                 })
                             else:
                                 print (f'{apichar["name"]} ({apichar["level"]}) has been active but no history - ignoring')
+                else:
+                    if int(apichar["level"]) < int(settings["minlevel"]):
+                        print (f'{apichar["name"]} ({apichar["level"]}) is new!')
+                        chars.append({
+                            "account": account,
+                            "char": apichar["name"]
+                        })
                     else:
-                        if int(apichar["level"]) < int(settings["minlevel"]):
-                            print (f'{apichar["name"]} ({apichar["level"]}) is new!')
-                            chars.append({
-                                "account": account,
-                                "char": apichar["name"]
-                            })
-                        else:
-                            print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
-                    accounts[account][apichar["name"]] = apichar
+                        print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
+                accounts[account][apichar["name"]] = apichar
         except:
             track = traceback.format_exc()
             print(track)
