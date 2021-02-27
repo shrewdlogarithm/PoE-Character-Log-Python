@@ -28,6 +28,9 @@
                     %   if len(league) > 15: 
                     %       league = league[0:12] + "..."
                     %   end
+                    %   skillset = ""
+                    %   if "skillset" in char:
+                    %       skillset = char["skillset"]
                     %   if "levelfrom" in char and int(char["level"]) > 10:
                     %       if first:
                     %           first = False
@@ -42,7 +45,7 @@
                                 <td><a href={{f'logs/{account}-{ch}.html'}}>Build Log</a></td>
                                 <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
                                 <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
-                                <td>{{char["skillset"]}}</td>
+                                <td>{{skillset}}</td>
                             </tr>
                     %   end 
                 %   end
