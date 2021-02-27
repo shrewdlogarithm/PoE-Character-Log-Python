@@ -129,7 +129,6 @@ def makelogs(account,char,before,after):
         with open(f"logs/{account}-{char}.log", 'a') as f:
             out = re.sub('<[^>]+>', '', out)
             f.write(out)
-            print(out)
         return True
     else:
         return False
