@@ -20,7 +20,7 @@
         % if os.path.exists(accountdb):
         %   with open(accountdb) as json_file:
         %       accounts = json.load(json_file)
-        %       for account in accounts:
+        %       for account in sorted(accounts):
                     % first = True
                     % for ch in accounts[account]:
                     %   char = accounts[account][ch]
