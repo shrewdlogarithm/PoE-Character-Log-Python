@@ -11,7 +11,7 @@
     </head>
     <body>
         <table>
-        <tr><td></td><td>Level</td><td>Raw</td><td colspan=2>BuildLog</td><td colspan=2>Path of Building</td><td>Skills</td></tr>
+        <tr><td></td><td>Level</td><td colspan=2>BuildLog</td><td>Path of Building</td><td>Skills</td></tr>
         % import os,json
         % accountdb = "data/accountdb.json"
         % accounts = {}
@@ -26,11 +26,9 @@
                             <tr>
                                 <td>{{char["name"]}} - {{char["class"]}} [{{char["league"]}}]</td>
                                 <td>{{char["levelfrom"]}}-{{char["level"]}}</td>
-                                <td><a href={{f'data/{account}-{ch}.json'}}>JSON</a></td>
                                 <td><a href={{f'logs/{account}-{ch}.log'}}>Txt</a></td>
                                 <td><a href={{f'logs/{account}-{ch}.html'}}>Web</a></td>
                                 <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
-                                <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
                                 <td>{{char["skillset"]}}</td>
                             </tr>
     </body>

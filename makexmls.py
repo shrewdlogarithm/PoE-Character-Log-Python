@@ -1,4 +1,4 @@
-import json,glob,os
+import json,os
 from charparser import makexml
 
 accountdb = "data/accountdb.json"
