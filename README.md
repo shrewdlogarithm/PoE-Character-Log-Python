@@ -31,6 +31,8 @@ This also includes PoB "build codes" which can be pasted into PoB directly
 To see an example of this, this site tracks popular PoE streamers  
 http://poeclog.pythonanywhere.com
 
+The rebuildlogxml.py script will re-create all log/html/xml files - this can be useful to update older characters when changes are made to the parsing/output
+
 ## Running this on PythonAnywhere ##
 Clone this repo into PythonAnywhere (root directory required for links to work currently) and it should 'just work' - even on a 'free' account!!
 Note: CPU limits mean you won't be able to track many accounts and/or may need to increase the pause between scans (Longwait) in the settings.json file
