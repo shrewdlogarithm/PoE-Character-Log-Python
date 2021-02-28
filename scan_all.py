@@ -85,8 +85,9 @@ while 1==1:
                         })
                     else:
                         print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
-                for val in apichar:
-                    accounts[account][apichar["name"]][val] = apichar[val]
+                if apichar["name"] in accounts[account]:
+                    for val in apichar:
+                        accounts[account][apichar["name"]][val] = apichar[val]
         except:
             track = traceback.format_exc()
             print(track)
