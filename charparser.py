@@ -80,7 +80,7 @@ def getskills(items):
             #for gem in sorted(group["supports"]):
             #    ret.append(f'{gem} >> {" ".join(group["gems"])}')
             if len(group["gems"]) > 0 or len(group["supports"]) > 0:
-                ret.append(" | ".join(sorted(group["gems"])) + " >> " + " | ".join(sorted(group["supports"])))
+                ret.append(" | ".join(group["gems"]) + " >> " + " | ".join(group["supports"]))
     return ret
     
 def showchanges(before, after, bpref, apref):
@@ -99,7 +99,7 @@ def maketreelink(char):
     for node in char["passives"]:
         bhead.append(node//256)
         bhead.append(node%256)
-    return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + base64.b64encode(bhead,altchars=b"__").decode("utf-8")
+    return "https://www.pathofexile.com/fullscreen-passive-skill-tree/" + base64.b64encode(bhead,altchars=b"-_").decode("utf-8")
 
 def makelogs(account,char,before,after):
     out = ""
@@ -118,11 +118,11 @@ def makelogs(account,char,before,after):
             out = out + "Passive Tree <a href=\"" + treelink  + "\">" + treelink + '</a>\n'
     if len(out) > 0:
         if not os.path.exists(f"logs/{account}-{char}.html"):
-            with open(f"logs/{account}-{char}.html", 'w') as f:
+            with open(f"logs/{account}-{char}.html", 'w', encoding='utf8') as f:
                 f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
                 f.write(f"Account: {account} - Character: {char}<BR><BR>")
         if not os.path.exists(f"logs/{account}-{char}.log"):
-            with open(f"logs/{account}-{char}.log", 'w') as f:
+            with open(f"logs/{account}-{char}.log", 'w', encoding='utf8') as f:
                 f.write(f"Account: {account} - Character: {char}\n")
         with open(f"logs/{account}-{char}.html", 'a') as f:
             f.write(out.replace("\n","<BR><BR>"))
@@ -214,7 +214,7 @@ def makexml(account,char,chardata,accountdb):
                     for gm in group["gems"]:
                         mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
                 if len(group["gems"]) > 0:
-                    skillset = " ".join(sorted(group["gems"])) + " " + ",".join(sorted(group["supports"]))
+                    skillset = " ".join(group["gems"]) + " " + ",".join(group["supports"])
                     skillset = re.sub('<[^>]+>', '', skillset).replace(" Support","")
                     if skillset not in skilldb:
                         skilldb.append(skillset)
@@ -229,7 +229,7 @@ def makexml(account,char,chardata,accountdb):
                         skill.setAttribute("enabled","true")                        
                         skills.appendChild(skill)
         if len(mainskills) > 0:
-            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(sorted(set(mainskills[0:3]),reverse=True)))
+            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(set(mainskills[0:3]),reverse=True))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
