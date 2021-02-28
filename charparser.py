@@ -214,7 +214,7 @@ def makexml(account,char,chardata,accountdb):
                     for gm in group["gems"]:
                         mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
                 if len(group["gems"]) > 0:
-                    skillset = " ".join(group["gems"]) + " " + ",".join(group["supports"])
+                    skillset = " ".join(sorted(group["gems"])) + " " + ",".join(sorted(group["supports"]))
                     skillset = re.sub('<[^>]+>', '', skillset).replace(" Support","")
                     if skillset not in skilldb:
                         skilldb.append(skillset)
