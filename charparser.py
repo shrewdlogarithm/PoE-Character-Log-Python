@@ -64,7 +64,7 @@ def buildskills(items):
                         gemstr = item["socketedItems"][gem]["typeLine"]
                     else:
                         gemstr = "Unknown Gem!"
-                    if "support" in item["socketedItems"][gem] and item["socketedItems"][gem]["support"]:
+                    if " Support" in item["socketedItems"][gem]["typeLine"] or ("support" in item["socketedItems"][gem] and item["socketedItems"][gem]["support"]):
                         gemgroups[slot][group]["supports"].append(gemstr)
                     else:
                         gemgroups[slot][group]["gems"].append(gemstr)
@@ -210,7 +210,7 @@ def makexml(account,char,chardata,accountdb):
         for slot in gemgroups:
             skill = root.createElement("Skill")
             for group in gemgroups[slot]:                    
-                if (len(group["supports"]) > 1):
+                if (len(group["supports"]) > 0):
                     for gm in group["gems"]:
                         mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
                 if len(group["gems"]) > 0:
@@ -229,7 +229,7 @@ def makexml(account,char,chardata,accountdb):
                         skill.setAttribute("enabled","true")                        
                         skills.appendChild(skill)
         if len(mainskills) > 0:
-            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(mainskills[0:3]))
+            accountdb["skillset"] = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills[0:4]),reverse=True)))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")

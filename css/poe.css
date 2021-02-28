@@ -17,6 +17,7 @@ h3 {
 td {
     padding: 0px;
     padding-right: 5px;
+    white-space: nowrap;
 }
 
 .gemI, .gemI:link, .gemI:visited {
