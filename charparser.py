@@ -229,7 +229,7 @@ def makexml(account,char,chardata,accountdb):
                         skill.setAttribute("enabled","true")                        
                         skills.appendChild(skill)
         if len(mainskills) > 0:
-            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(set(mainskills[0:3]),reverse=True))
+            accountdb["skillset"] = re.sub("\[[0-9]\] ","","  ".join(mainskills[0:3]))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
