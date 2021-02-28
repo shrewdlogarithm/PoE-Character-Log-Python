@@ -91,7 +91,6 @@ while 1==1:
         except:
             track = traceback.format_exc()
             print(track)
-            print('Waiting {settings["longsleep"]}s before continuing')
             mywait(settings["longsleep"])
         else:
             mywait(settings["shortsleep"])
@@ -133,7 +132,6 @@ while 1==1:
         except:
             track = traceback.format_exc()
             print(track)
-            print('Waiting {settings["longsleep"]}s before continuing')
             mywait(settings["longsleep"])
 
         mywait(settings["shortsleep"])
