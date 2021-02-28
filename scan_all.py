@@ -83,6 +83,7 @@ while 1==1:
                             "account": account,
                             "char": apichar["name"]
                         })
+                        accounts[account][apichar["name"]] = {}
                     else:
                         print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
                 if apichar["name"] in accounts[account]:
