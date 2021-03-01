@@ -1,5 +1,6 @@
 !.gitkeep
 
+.gitconfig
 .bash*
 .config/
 .local/
