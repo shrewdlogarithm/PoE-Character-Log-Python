@@ -4,14 +4,12 @@
 This is VERY much work-in-progress - sharing for feedback/ideas!
 
 ## How to Use ##
-Download the repo and run "scan_all.py" to start scanning
-
-This loops 'forever', scanning selected PoE Accounts and storing their equipment, passive-tree and skills for later use
-
-First-run  creates a "setting.json" file - edit this to...  
-Specify the accounts you'd like to track  
-Change the frequency of scans (be careful not to hit the API rate-limit and remember that more scans = LOTS more data!!)  
-Set the max level to consider a 'new' character (default 10) and the max level to monitor any character (default 90) - again, higher numbers = MORE DATA!!  
+Run "scan_all.py"
+This runs endlessly (Ctrl-C to stop it) tracking characters as they are played...  
+The first time you run this it creates "settings.json" - edit that to  
+Specify the account(s) you wish to scan.  
+Specify short (between API accesses) and long (between scans or after errors) sleep times  
+Specify the highest level to consider character "new" and the max level to monitor any character 
 Note: settings.json is read every time the scanner loops - no-need to restart!
 
 ## What it creates ##
@@ -32,6 +30,11 @@ To see an example of this, this site tracks popular PoE streamers
 http://poeclog.pythonanywhere.com
 
 The rebuildlogxml.py script will re-create all log/html/xml files - this can be useful to update older characters when changes are made to the parsing/output
+
+## Notes ##
+There is  a Powershell version of this for desktop use/people who don't want to install Python  
+https://github.com/shrewdlogarithm/PoE-Character-Log-PS  
+It lags behind the Python version in features but it's data gathering is identical (JSON files can be interchanged between the PS and Python versions just fine)
 
 ## Running this on PythonAnywhere ##
 Clone this repo into PythonAnywhere (root directory required for links to work currently) and it should 'just work' - even on a 'free' account!!
@@ -59,9 +62,3 @@ To get the 'mysite' Bottle.py application working, create a new WebApp, choose "
   # import bottle application
   from bottle_app import application`
 ```
-
-## Notes ##
-There is  a Powershell version of this for desktop use/people who don't want to install Python  
-https://github.com/shrewdlogarithm/PoE-Character-Log-PS
-
-It lags behind the Python version in features but it's data gathering is identical (JSON files can be interchanged between the PS and Python versions just fine)
