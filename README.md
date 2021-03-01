@@ -5,11 +5,13 @@ This is VERY much work-in-progress - sharing for feedback/ideas!
 
 ## How to Use ##
 Run "scan_all.py"
-This runs endlessly (Ctrl-C to stop it) tracking characters as they are played...  
+This runs endlessly, tracking characters as they are played...  
+
 The first time you run this it creates "settings.json" - edit that to  
 Specify the account(s) you wish to scan.  
 Specify short (between API accesses) and long (between scans or after errors) sleep times  
 Specify the highest level to consider character "new" and the max level to monitor any character 
+
 Note: settings.json is read every time the scanner loops - no-need to restart!
 
 ## What it creates ##
@@ -29,7 +31,8 @@ This also includes PoB "build codes" which can be pasted into PoB directly
 To see an example of this, this site tracks popular PoE streamers  
 http://poeclog.pythonanywhere.com
 
-The rebuildlogxml.py script will re-create all log/html/xml files - this can be useful to update older characters when changes are made to the parsing/output
+rebuildlogxml re-creates all log/html/xml files  
+This can be useful to update older characters when changes are made to the parsing/output
 
 ## Notes ##
 There is  a Powershell version of this for desktop use/people who don't want to install Python  
