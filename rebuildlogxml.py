@@ -1,14 +1,14 @@
 import glob,json,os
 from charparser import makelogs,makexml
 
-accountdb = "data/accountdb.json"
+accountdb = "accountdb.json"
 accounts = {}
 
 if os.path.exists(accountdb):
     with open(accountdb) as json_file:
         accounts = json.load(json_file)
 
-POEChars = glob.glob('data/*-*.json')
+POEChars = glob.glob('data/*.json')
 
 for POEChar in POEChars:
 

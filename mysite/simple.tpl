@@ -15,7 +15,7 @@
     <P>
         <table>
         % import os,json
-        % accountdb = "data/accountdb.json"
+        % accountdb = "accountdb.json"
         % accounts = {}
         % if os.path.exists(accountdb):
         %   with open(accountdb) as json_file:
