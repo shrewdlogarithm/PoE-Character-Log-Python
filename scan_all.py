@@ -14,7 +14,7 @@ settings = {
     "minlevel": 10      # ignore new characters above this level
 }
 
-accountdb = "data/accountdb.json"
+accountdb = "accountdb.json"
 accounts = {}
 
 def mywait(mytime):
