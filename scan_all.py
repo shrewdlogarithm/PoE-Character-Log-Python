@@ -6,6 +6,7 @@ session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'}) 
 response = session.get('https://api.pathofexile.com') 
 
+# these are default settings - run this script then edit settings.json to customize
 settings = {
     "toscan": [],
     "shortsleep": 1,    # min. seconds between API requests - avoid hitting the rate-limit
@@ -66,8 +67,8 @@ while 1==1:
                             "account": account,
                             "char": apichar["name"]
                         })
-                    if "level" in apichar and int(apichar["level"]) < int(settings["maxlevel"]):
-                        if accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
+                    else if int(apichar["level"]) < int(settings["maxlevel"]):
+                        if "experience" in accounts[account][apichar["name"]] and accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):                                
                                 print (f'{apichar["name"]} ({apichar["level"]}) has been active')
                                 chars.append({
@@ -93,8 +94,8 @@ while 1==1:
             track = traceback.format_exc()
             print(track)
             mywait(settings["longsleep"])
-        else:
-            mywait(settings["shortsleep"])
+        
+        mywait(settings["shortsleep"])
 
     for char in chars:
         try:
