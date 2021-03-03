@@ -67,7 +67,7 @@ while 1==1:
                             "account": account,
                             "char": apichar["name"]
                         })
-                    else if int(apichar["level"]) < int(settings["maxlevel"]):
+                    elif int(apichar["level"]) < int(settings["maxlevel"]):
                         if "experience" in accounts[account][apichar["name"]] and accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                             if os.path.exists(f'data/{account}-{apichar["name"]}.json'):                                
                                 print (f'{apichar["name"]} ({apichar["level"]}) has been active')
