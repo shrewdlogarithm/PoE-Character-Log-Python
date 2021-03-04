@@ -5,6 +5,7 @@
 .cache
 .config/
 .local/
+.nfs*
 .profile
 .python*
 README.txt
