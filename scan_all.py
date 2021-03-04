@@ -3,8 +3,8 @@ from datetime import datetime
 from charparser import makelogs, makexml
 
 session = requests.Session()
-session.headers.update({'User-Agent': 'POEClog'}) 
-response = session.get('https://api.pathofexile.com') 
+session.headers.update({'User-Agent': 'POEClog'})
+response = session.get('https://api.pathofexile.com')
 
 # these are default settings - run this script then edit settings.json to customize
 settings = {
