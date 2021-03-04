@@ -20,4 +20,6 @@ pob/*
 accountdb.json
 settings.json
 
-*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
