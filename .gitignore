@@ -2,6 +2,7 @@
 
 .gitconfig
 .bash*
+.cache
 .config/
 .local/
 .profile

@@ -17,9 +17,13 @@ settings = {
 
 accountdb = "accountdb.json"
 accounts = {}
+def tolog(out):
+    print(out)
+    with open("scan_all.log", 'a') as logout:
+        logout.write(out + "\n")
 
 def mywait(mytime):
-    print (f"Sleeping for {mytime}s")
+    tolog (f"Sleeping for {mytime}s")
     time.sleep(mytime)
 
 def archivedata(account,char):
@@ -50,7 +54,7 @@ while 1==1:
 
     for account in settings["toscan"]:
         try:
-            print(f"Scanning Account {account}")
+            tolog(f"Scanning Account {account}")
             if account not in accounts:
                 accounts[account] = {}
             apichars = session.get(f"https://api.pathofexile.com/character-window/get-characters?accountName={account}&realm=pc")
@@ -58,7 +62,7 @@ while 1==1:
             for apichar in apichardb:
                 if apichar["name"] in accounts[account]:
                     if "level" in accounts[account][apichar["name"]] and int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
-                        print (f'{apichar["name"]} has been rerolled - archiving old character data')
+                        tolog (f'{apichar["name"]} has been rerolled - archiving old character data')
                         archchar = archivedata(account,apichar["name"])
                         accounts[account][archchar] = accounts[account][apichar["name"]]
                         accounts[account][archchar]["name"] = archchar
@@ -69,37 +73,37 @@ while 1==1:
                         })
                     elif int(apichar["level"]) < int(settings["maxlevel"]):
                         if "experience" in accounts[account][apichar["name"]] and accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
-                            if os.path.exists(f'data/{account}-{apichar["name"]}.json'):                                
-                                print (f'{apichar["name"]} ({apichar["level"]}) has been active')
+                            if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
+                                tolog (f'{apichar["name"]} ({apichar["level"]}) has been active')
                                 chars.append({
                                     "account": account,
                                     "char": apichar["name"]
                                 })
                             else:
-                                print (f'{apichar["name"]} ({apichar["level"]}) has been active but no history - ignoring')
+                                tolog (f'{apichar["name"]} ({apichar["level"]}) has been active but no history - ignoring')
                 else:
                     if int(apichar["level"]) < int(settings["minlevel"]):
-                        print (f'{apichar["name"]} ({apichar["level"]}) is new!')
+                        tolog (f'{apichar["name"]} ({apichar["level"]}) is new!')
                         chars.append({
                             "account": account,
                             "char": apichar["name"]
                         })
                     else:
-                        print (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
+                        tolog (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
                 if apichar["name"] not in accounts[account]:
                     accounts[account][apichar["name"]] = {}
                 for val in apichar:
                     accounts[account][apichar["name"]][val] = apichar[val]
         except:
             track = traceback.format_exc()
-            print(track)
+            tolog(track)
             mywait(settings["longsleep"])
-        
+
         mywait(settings["shortsleep"])
 
     for char in chars:
         try:
-            print(f'Scanning Char {char["account"]} - {char["char"]}')
+            tolog(f'Scanning Char {char["account"]} - {char["char"]}')
             scantime = datetime.now()
             dbname = f'data/{char["account"]}-{char["char"]}.json'
             passives = session.get(f'https://api.pathofexile.com/character-window/get-passive-skills?reqData=0&accountName={char["account"]}&realm=pc&character={char["char"]}')
@@ -124,8 +128,8 @@ while 1==1:
             })
 
             if len(chardata) > 1:
-                if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):                   
-                    print("Updated")
+                if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):
+                    tolog("Updated")
                     makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
 
             with open(dbname, 'w') as json_file:
@@ -133,7 +137,7 @@ while 1==1:
 
         except:
             track = traceback.format_exc()
-            print(track)
+            tolog(track)
             mywait(settings["longsleep"])
 
         mywait(settings["shortsleep"])

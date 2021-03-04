@@ -28,6 +28,10 @@ def server_static(filename):
 def server_static(filename):
     return static_file(filename, root='./pob/builds')
 
+@route('/console')
+def server_static():
+    return static_file("scan_all.log", root='.', mimetype='text/plain')
+
 application = default_app()
 
 if __name__ == "__main__":
