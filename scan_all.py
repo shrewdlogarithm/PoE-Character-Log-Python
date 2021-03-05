@@ -1,4 +1,4 @@
-import os,requests,json,time,traceback
+import os,requests,json,traceback
 from datetime import datetime
 from charparser import makelogs, makexml, tolog, mywait
 
