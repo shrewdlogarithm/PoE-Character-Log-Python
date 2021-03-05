@@ -1,6 +1,6 @@
 import os,requests,json,time,traceback
 from datetime import datetime
-from charparser import makelogs, makexml
+from charparser import makelogs, makexml, tolog, mywait
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'})
@@ -17,14 +17,6 @@ settings = {
 
 accountdb = "accountdb.json"
 accounts = {}
-def tolog(out):
-    print(out)
-    with open("scan_all.log", 'a') as logout:
-        logout.write(out + "\n")
-
-def mywait(mytime):
-    tolog (f"Sleeping for {mytime}s")
-    time.sleep(mytime)
 
 def archivedata(account,char):
     rrdate = datetime.today().strftime('%Y%m%d%H%M')

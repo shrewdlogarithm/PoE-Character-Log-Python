@@ -1,8 +1,16 @@
 import base64,zlib,json,re,os
-from xml.dom import minidom 
-from datetime import datetime
+from xml.dom import minidom
 
 POBTREEVER = "3_13"
+
+def tolog(out):
+    print(out)
+    with open("scan_all.log", 'a') as logout:
+        logout.write(out + "\n")
+
+def mywait(mytime):
+    tolog (f"Sleeping for {mytime}s")
+    time.sleep(mytime)
 
 with open('passive-skill-tree.json') as json_file:
     passivedb = json.load(json_file)
@@ -37,7 +45,7 @@ def getitems(items):
                     name += f'{item["name"]} {item["typeLine"]}'
             else:
                 name += item["typeLine"]
-            name += " iLvl:" + str(item["ilvl"]) 
+            name += " iLvl:" + str(item["ilvl"])
             name += "</span>"
             name += " " + sockets
             ret.append(name)
@@ -58,7 +66,7 @@ def buildskills(items):
             if "socketedItems" in item:
                 for gem in range(0,len(item["socketedItems"])):
                     group = item["sockets"][gem]["group"]
-                    if item["socketedItems"][gem]["colour"] and item["socketedItems"][gem]["typeLine"]: 
+                    if item["socketedItems"][gem]["colour"] and item["socketedItems"][gem]["typeLine"]:
                         gemstr = "<a class=gem" + item["socketedItems"][gem]["colour"] + " href=\"https://pathofexile.gamepedia.com/" + item["socketedItems"][gem]["typeLine"].replace(" ","_") + "\">" + item["socketedItems"][gem]["typeLine"] + "</a>"
                     elif  item["socketedItems"][gem]["typeLine"]:
                         gemstr = item["socketedItems"][gem]["typeLine"]
@@ -82,7 +90,7 @@ def getskills(items):
             if len(group["gems"]) > 0 or len(group["supports"]) > 0:
                 ret.append(" | ".join(group["gems"]) + " >> " + " | ".join(group["supports"]))
     return ret
-    
+
 def showchanges(before, after, bpref, apref):
     ret = []
     for bef in before:
@@ -106,7 +114,7 @@ def makelogs(account,char,before,after):
     if (before["character"]["level"] != after["character"]["level"]):
         out = out + f'Reached Level {after["character"]["level"]}\n'
     for change in showchanges(getpassives(before["passives"]),getpassives(after["passives"]),"Deallocated ","Allocated "):
-        out = out + change 
+        out = out + change
     for change in showchanges(getitems(before["items"]),getitems(after["items"]),"Removed ","Equipped "):
         out = out + change
     for change in showchanges(getskills(before["items"]),getskills(after["items"]),"Unsocketed ","Socketed "):
@@ -119,7 +127,7 @@ def makelogs(account,char,before,after):
     if len(out) > 0:
         if not os.path.exists(f"logs/{account}-{char}.html"):
             with open(f"logs/{account}-{char}.html", 'w', encoding='utf8') as f:
-                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")    
+                f.write("<head><link rel=\"stylesheet\" href=\"/css/style.css\"><link rel=\"stylesheet\" href=\"/css/poe.css\"></head>")
                 f.write(f"Account: {account} - Character: {char}<BR><BR>")
         if not os.path.exists(f"logs/{account}-{char}.log"):
             with open(f"logs/{account}-{char}.log", 'w', encoding='utf8') as f:
@@ -141,7 +149,7 @@ ascendName = (
     ("None","Occultist","Elementalist","Necromancer"),
     ("None","Slayer","Gladiator","Champion"),
     ("None","Inquisitor","Hierophant","Guardian"),
-    ("None","Assassin","Trickster","Saboteur")    
+    ("None","Assassin","Trickster","Saboteur")
 )
 rarity = ("NORMAL","MAGIC","RARE","UNIQUE")
 socketTrans = {
@@ -167,9 +175,9 @@ def getbyname(attrs,attr,name):
                 return at["values"][0][0]
 
 def makexml(account,char,chardata,accountdb):
-    root = minidom.Document()     
-    pob = root.createElement('PathOfBuilding')  
-    root.appendChild(pob) 
+    root = minidom.Document()
+    pob = root.createElement('PathOfBuilding')
+    root.appendChild(pob)
     accountdb["levelfrom"] = chardata[0]["character"]["level"]
     accountdb["league"] = chardata[len(chardata)-1]["character"]["league"]
     build = root.createElement('Build')
@@ -179,9 +187,9 @@ def makexml(account,char,chardata,accountdb):
     build.setAttribute('ascendClassName',ascendName[chardata[len(chardata)-1]["character"]["classId"]][chardata[len(chardata)-1]["character"]["ascendancyClass"]])
     build.setAttribute("viewMode","ITEMS")
     pob.appendChild(build)
-    tree = root.createElement('Tree') 
-    tree.setAttribute('activeSpec', '1') 
-    pob.appendChild(tree) 
+    tree = root.createElement('Tree')
+    tree.setAttribute('activeSpec', '1')
+    pob.appendChild(tree)
     items = root.createElement("Items")
     items.setAttribute("activeItemSet","1")
     items.setAttribute("useSecondWeaponSet","nil")
@@ -204,12 +212,12 @@ def makexml(account,char,chardata,accountdb):
             id.setAttribute("nodes",nodes)
             id.setAttribute("treeVersion",POBTREEVER)
             id.setAttribute("classId",str(chardata[e]["character"]["classId"]))
-            tree.appendChild(id)   
-        gemgroups = buildskills(chardata[e]["items"])  
+            tree.appendChild(id)
+        gemgroups = buildskills(chardata[e]["items"])
         mainskills = []
         for slot in gemgroups:
             skill = root.createElement("Skill")
-            for group in gemgroups[slot]:                    
+            for group in gemgroups[slot]:
                 if (len(group["supports"]) > 0):
                     for gm in group["gems"]:
                         mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
@@ -226,7 +234,7 @@ def makexml(account,char,chardata,accountdb):
                             gem.setAttribute("enabled","true")
                             skill.appendChild(gem)
                         skill.setAttribute("label",f"{level}-{skillset}")
-                        skill.setAttribute("enabled","true")                        
+                        skill.setAttribute("enabled","true")
                         skills.appendChild(skill)
         if len(mainskills) > 0:
             accountdb["skillset"] = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills[0:4]),reverse=True)))
@@ -269,11 +277,12 @@ def makexml(account,char,chardata,accountdb):
                     if "explicitMods" in itm:
                         for exp  in itm["explicitMods"]:
                             itemtext += exp + "\n"
-                    itemtext = itemtext.replace(chr(246),"o") # the Maelstrom 'o'
+                    itemtext = itemtext.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
+                    #itemtext = itemtext.replace(chr(228),"a") # umlaut 'a' as in Doppelganger
                     text = root.createTextNode(itemtext)
                     item.appendChild(text)
                     items.appendChild(item)
-                    itn = itn + 1                
+                    itn = itn + 1
                 iid = socketTrans[itm["inventoryId"]]
                 if iid == "Flask":
                     iid += f" {fln}"
@@ -286,6 +295,14 @@ def makexml(account,char,chardata,accountdb):
                     items.appendChild(itemset)
                     isn = isn + 1
                 lastset[iid] = itemno
-    accountdb["pcode"] = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
+    try:
+        accountdb["pcode"] = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
+    except Exception as e:
+        specchar = re.search(r"...[\x80-\xff]...",root.toxml())
+        if specchar:
+            tolog("Special Character encountered " + specchar.group() + " - Charcode " + str(ord(specchar.group()[3:4])))
+        else:
+            tolog("Unexpected error during XML to pastecode conversion" + e)
+
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
