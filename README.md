@@ -8,6 +8,8 @@ Download Passives, Skills and Items for any character which has been active on t
 Create a 'Build Log' showing changes to the character over-time
 Create a Path-of-Building Pastecode/XML which contains the same data
 
+[PoEClog in less than 60s (YouTube Link)](https://www.youtube.com/watch?v=Mje0pl9L8sY)
+
 ## How to Use ##
 Run "scan_all"
 This runs endlessly, tracking characters as they are played...  
