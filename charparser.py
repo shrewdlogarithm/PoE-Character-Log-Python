@@ -13,15 +13,16 @@ def fixspec(strin):
     return strin
 
 def tolog(out):
-    out = fixspec(out)
-    try:
-        print(out)
-        with open("scan_all.log", 'a', encoding="utf-8") as logout:
-            logout.write(out + "\n")
-    except Exception as e:
-        tolog("Unexpected error during Log Writing")
-        track = traceback.format_exc()
-        tolog(track)
+    if out:
+        out = fixspec(out)
+        try:
+            print(out)
+            with open("scan_all.log", 'a', encoding="utf-8") as logout:
+                logout.write(out + "\n")
+        except Exception as e:
+            tolog("Unexpected error during Log Writing")
+            track = traceback.format_exc()
+            tolog(track)
 
 def mywait(mytime):
     time.sleep(mytime)
