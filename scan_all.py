@@ -121,7 +121,8 @@ while 1==1:
             })
 
             if len(chardata) > 1:
-                tolog(makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]))
+                if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):
+                    tolog("Updated")
                 makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
 
             with open(dbname, 'w') as json_file:
