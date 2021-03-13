@@ -87,6 +87,7 @@ while 1==1:
                 for val in apichar:
                     accounts[account][apichar["name"]][val] = apichar[val]
         except:
+            tolog("Error during Account Scan")
             track = traceback.format_exc()
             tolog(track)
             mywait(settings["longsleep"])
@@ -120,14 +121,14 @@ while 1==1:
             })
 
             if len(chardata) > 1:
-                if makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]):
-                    tolog("Updated")
-                    makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
+                tolog(makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]))
+                makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
 
             with open(dbname, 'w') as json_file:
                 json.dump(chardata, json_file, indent=4, default=str)
 
         except:
+            tolog("Error during Character Scan")
             track = traceback.format_exc()
             tolog(track)
             mywait(settings["longsleep"])
