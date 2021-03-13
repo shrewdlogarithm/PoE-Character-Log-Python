@@ -1,15 +1,29 @@
-import base64,zlib,json,re,os,time
+import base64,zlib,json,re,os,time,traceback
 from xml.dom import minidom
 
 POBTREEVER = "3_13"
 
+def fixspec(strin):
+    strin = strin.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
+    strin = strin.replace(chr(228),"a") # umlaut 'a' as in Doppelganger
+    specchar = re.search(r"...[\x80-\xff]...",strin)
+    if specchar:
+        tolog("Special Character encountered " + specchar.group() + " - Charcode " + str(ord(specchar.group()[3:4])))
+        strin = re.sub(r"[\x80-\xff]","?",strin)            
+    return strin
+
 def tolog(out):
-    print(out)
-    with open("scan_all.log", 'a') as logout:
-        logout.write(out + "\n")
+    out = fixspec(out)
+    try:
+        print(out)
+        with open("scan_all.log", 'a', encoding="utf-8") as logout:
+            logout.write(out + "\n")
+    except Exception as e:
+        tolog("Unexpected error during Log Writing")
+        track = traceback.format_exc()
+        tolog(track)
 
 def mywait(mytime):
-    tolog (f"Sleeping for {mytime}s")
     time.sleep(mytime)
 
 with open('passive-skill-tree.json') as json_file:
@@ -137,10 +151,8 @@ def makelogs(account,char,before,after):
         with open(f"logs/{account}-{char}.log", 'a') as f:
             out = re.sub('<[^>]+>', '', out)
             f.write(out)
-        return True
-    else:
-        return False
-
+    return out
+    
 className = ("Scion","Marauder","Ranger","Witch","Duelist","Templar","Shadow")
 ascendName = (
     ("None","Ascendant"),
@@ -277,8 +289,7 @@ def makexml(account,char,chardata,accountdb):
                     if "explicitMods" in itm:
                         for exp  in itm["explicitMods"]:
                             itemtext += exp + "\n"
-                    itemtext = itemtext.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
-                    #itemtext = itemtext.replace(chr(228),"a") # umlaut 'a' as in Doppelganger
+                    itemtext = fixspec(itemtext)                    
                     text = root.createTextNode(itemtext)
                     item.appendChild(text)
                     items.appendChild(item)
@@ -298,11 +309,11 @@ def makexml(account,char,chardata,accountdb):
     try:
         accountdb["pcode"] = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
     except Exception as e:
-        specchar = re.search(r"...[\x80-\xff]...",root.toxml())
-        if specchar:
-            tolog("Special Character encountered " + specchar.group() + " - Charcode " + str(ord(specchar.group()[3:4])))
-        else:
-            tolog("Unexpected error during XML to pastecode conversion" + e)
+        tolog("Unexpected error during XML to pastecode conversion")
+        track = traceback.format_exc()
+        tolog(track)
+        mywait(settings["longsleep"])
+
 
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
