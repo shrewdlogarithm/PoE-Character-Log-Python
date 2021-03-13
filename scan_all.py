@@ -128,6 +128,9 @@ while 1==1:
             with open(dbname, 'w') as json_file:
                 json.dump(chardata, json_file, indent=4, default=str)
 
+            with open(accountdb, 'w') as json_file:
+                json.dump(accounts, json_file, indent=4)
+
         except:
             tolog("Error during Character Scan")
             track = traceback.format_exc()
@@ -135,8 +138,5 @@ while 1==1:
             mywait(settings["longsleep"])
 
         mywait(settings["shortsleep"])
-
-    with open(accountdb, 'w') as json_file:
-        json.dump(accounts, json_file, indent=4)
 
     mywait(settings["longsleep"])
