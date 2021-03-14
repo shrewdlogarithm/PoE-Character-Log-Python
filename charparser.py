@@ -14,7 +14,7 @@ def fixspec(strin):
 
 def tolog(out):
     if out:
-        out = fixspec(out)
+        out = fixspec(out).rstrip()
         try:
             print(out)
             with open("scan_all.log", 'a', encoding="utf-8") as logout:
