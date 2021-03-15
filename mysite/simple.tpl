@@ -30,8 +30,8 @@
                     %   end
                     %   skillset = ""
                     %   if "skillset" in char:
-                    %       skillset = char["skillset"]
-                    %   if "levelfrom" in char and int(char["level"]) > 10:
+                    %      skillset = char["skillset"]
+                    %   if "levelfrom" in char and os.path.exists(f'data/{account}-{char["name"]}.json'): 
                     %       if first:
                     %           first = False
                                 <tr><td>&nbsp;</td></tr>
@@ -47,7 +47,7 @@
                                 <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
                                 <td>{{skillset}}</td>
                             </tr>
-                    %   end 
+                    %   end
                 %   end
             %   end
         %   end
