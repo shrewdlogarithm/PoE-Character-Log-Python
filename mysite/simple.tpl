@@ -31,7 +31,7 @@
                     %   skillset = ""
                     %   if "skillset" in char:
                     %      skillset = char["skillset"]
-                    %   if "levelfrom" in char and os.path.exists(f'data/{account}-{char["name"]}.json'): 
+                    %   if "levelfrom" in char and os.path.exists(f'data/{account}-{char["name"]}.json') and int(char["level"]) > 10:
                     %       if first:
                     %           first = False
                                 <tr><td>&nbsp;</td></tr>
