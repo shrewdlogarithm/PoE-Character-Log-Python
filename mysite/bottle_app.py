@@ -1,12 +1,19 @@
-# A very simple Bottle Hello World app for you to get started with...
+import json,os
 from bottle import default_app, route, template, TEMPLATE_PATH, static_file, run
-
 if __name__ == "__main__":
     TEMPLATE_PATH.append("mysite/")
 
 @route('/')
 def index():
-    return template('simple.tpl')
+    #We can generate the template 'live' here but scan_all.py does this for us
+    #accountdb = "accountdb.json"
+    #accounts = {}
+    #if os.path.exists(accountdb):
+    #    with open(accountdb) as json_file:
+    #        accounts = json.load(json_file)
+    #        print("Loaded")
+    #        return template('index.tpl',{"accounts": accounts})
+    return static_file("index.html", root='./mysite')
 
 @route('/data/<filename>')
 def server_static(filename):
