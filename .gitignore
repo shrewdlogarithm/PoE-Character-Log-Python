@@ -16,6 +16,7 @@ scan_all.log
 data/*.json
 logs/*.log
 logs/*.html
+mysite/index.html
 pob/*
 accountdb.json
 settings.json
