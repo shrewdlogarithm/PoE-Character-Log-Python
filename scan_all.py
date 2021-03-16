@@ -1,6 +1,7 @@
 import os,requests,json,traceback
 from datetime import datetime
 from charparser import makelogs, makexml, tolog, mywait
+from bottle import template
 
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'})
@@ -42,6 +43,14 @@ while 1==1:
     if os.path.exists(accountdb):
         with open(accountdb) as json_file:
             accounts = json.load(json_file)
+
+    for account in accounts:
+        for char in accounts[account]:
+            if "levelfrom" in accounts[account][char] and not os.path.exists(f'data/{account}-{char}.json'):
+                del accounts[account][char]["levelfrom"] 
+                tolog(f'{account}-{char} data removed - removing from Index')
+    with open("mysite/index.html","w", encoding="utf-8") as webfile:
+        webfile.write(template("mysite/index.tpl",{"accounts": accounts}))
 
     for account in settings["toscan"]:
 
@@ -95,7 +104,9 @@ while 1==1:
                     accounts[account][apichar["name"]] = {}
                 for val in apichar:
                     accounts[account][apichar["name"]][val] = apichar[val]
+            
             for char in toscan:
+            
                 try:
                     tolog(f'Scanning Char {char["account"]} - {char["char"]}')
                     scantime = datetime.now()
@@ -123,7 +134,13 @@ while 1==1:
 
                     if len(chardata) > 1:
                         tolog(makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]))
-                        makexml(char['account'],char['char'],chardata,accounts[char["account"]][char["char"]])
+
+                        mainskills,pcode = makexml(char['account'],char['char'],chardata)
+
+                        accounts[char["account"]][char["char"]]["levelfrom"] = chardata[0]["character"]["level"]
+                        accounts[char["account"]][char["char"]]["league"] = chardata[len(chardata)-1]["character"]["league"]
+                        accounts[char["account"]][char["char"]]["skillset"] = mainskills                        
+                        accounts[char["account"]][char["char"]]["pcode"] = pcode
 
                     with open(dbname, 'w') as json_file:
                         json.dump(chardata, json_file, indent=4, default=str)
@@ -139,7 +156,7 @@ while 1==1:
             track = traceback.format_exc()
             tolog(track)
             mywait(settings["longsleep"])
-
+           
         with open(accountdb, 'w') as json_file:
             json.dump(accounts, json_file, indent=4)
 

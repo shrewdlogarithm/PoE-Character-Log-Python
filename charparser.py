@@ -187,12 +187,10 @@ def getbyname(attrs,attr,name):
             if "name" in at and at["name"] == name:
                 return at["values"][0][0]
 
-def makexml(account,char,chardata,accountdb):
+def makexml(account,char,chardata):
     root = minidom.Document()
     pob = root.createElement('PathOfBuilding')
     root.appendChild(pob)
-    accountdb["levelfrom"] = chardata[0]["character"]["level"]
-    accountdb["league"] = chardata[len(chardata)-1]["character"]["league"]
     build = root.createElement('Build')
     build.setAttribute("targetVersion","3_0")
     build.setAttribute('level',str(chardata[len(chardata)-1]["character"]["level"]))
@@ -249,8 +247,6 @@ def makexml(account,char,chardata,accountdb):
                         skill.setAttribute("label",f"{level}-{skillset}")
                         skill.setAttribute("enabled","true")
                         skills.appendChild(skill)
-        if len(mainskills) > 0:
-            accountdb["skillset"] = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills[0:4]),reverse=True)))
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
@@ -307,8 +303,10 @@ def makexml(account,char,chardata,accountdb):
                     items.appendChild(itemset)
                     isn = isn + 1
                 lastset[iid] = itemno
+    
+    mainskills = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills[0:4]),reverse=True)))
     try:
-        accountdb["pcode"] = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
+        pcode = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
     except Exception as e:
         tolog("Unexpected error during XML to pastecode conversion")
         track = traceback.format_exc()
@@ -318,3 +316,5 @@ def makexml(account,char,chardata,accountdb):
 
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
+
+    return mainskills,pcode
