@@ -14,7 +14,7 @@
     <h3>Questions/Issues/Ideas - check our Github at <a href="https://github.com/shrewdlogarithm/PoE-Character-Log-Python">https://github.com/shrewdlogarithm/PoE-Character-Log-Python</a></h3>
     <P>
         <table>
-        %   for account in sorted(accounts):
+        %   for account in sorted(accounts, key=str.casefold):
         %       first = True
         %       for ch in accounts[account]:
         %           char = accounts[account][ch]
