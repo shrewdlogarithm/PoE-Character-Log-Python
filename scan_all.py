@@ -50,14 +50,8 @@ while 1==1:
     except:
         tolog(f'Error: accountdb file invalid or corrupted')
 
-
-    for account in accounts:
-        for char in accounts[account]:
-            if "levelfrom" in accounts[account][char] and not os.path.exists(f'data/{account}-{char}.json'):
-                del accounts[account][char]["levelfrom"] 
-                tolog(f'{account}-{char} data removed - removing from Index')
-    with open("mysite/index.html","w", encoding="utf-8") as webfile:
-        webfile.write(template("mysite/index.tpl",{"accounts": accounts}))
+        with open("mysite/index.html","w", encoding="utf-8") as webfile:
+            webfile.write(template("mysite/index.tpl",{"accounts": accounts}))
 
     for account in settings["toscan"]:
 
@@ -110,10 +104,9 @@ while 1==1:
                             })
                         else:
                             tolog (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
-                    if apichar["name"] not in accounts[account]:
-                        accounts[account][apichar["name"]] = {}
-                    for val in apichar:
-                        accounts[account][apichar["name"]][val] = apichar[val]
+                    if apichar["name"] in accounts[account] and "clogextradata" in accounts[account][apichar["name"]] and os.path.exists(f'data/{account}-{apichar["name"]}.json'):
+                        apichar["clogextradata"] = accounts[account][apichar["name"]]["clogextradata"]
+                    accounts[account][apichar["name"]] = apichar
             
             for char in toscan:
             
@@ -145,12 +138,7 @@ while 1==1:
                     if len(chardata) > 1:
                         tolog(makelogs(char['account'],char['char'],chardata[len(chardata)-2], chardata[len(chardata)-1]))
 
-                        mainskills,pcode = makexml(char['account'],char['char'],chardata)
-
-                        accounts[char["account"]][char["char"]]["levelfrom"] = chardata[0]["character"]["level"]
-                        accounts[char["account"]][char["char"]]["league"] = chardata[len(chardata)-1]["character"]["league"]
-                        accounts[char["account"]][char["char"]]["skillset"] = mainskills                        
-                        accounts[char["account"]][char["char"]]["pcode"] = pcode
+                        accounts[char["account"]][char["char"]]["clogextradata"] = makexml(char['account'],char['char'],chardata)
 
                     with open(dbname, 'w') as json_file:
                         json.dump(chardata, json_file, indent=4, default=str)

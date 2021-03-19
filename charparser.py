@@ -317,4 +317,9 @@ def makexml(account,char,chardata):
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
 
-    return mainskills,pcode
+    return {
+        "levelfrom": chardata[0]["character"]["level"],
+        "league": chardata[0]["character"]["league"],
+        "skillset": mainskills,
+        "pcode": pcode
+    }

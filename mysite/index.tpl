@@ -18,15 +18,11 @@
         %       first = True
         %       for ch in accounts[account]:
         %           char = accounts[account][ch]
-        %           league = char["league"]
-        %           if len(league) > 15: 
-        %               league = league[0:12] + "..."
-        %           end
-        %           skillset = ""
-        %           if "skillset" in char:
-        %               skillset = char["skillset"]
-        %           end
-        %           if "levelfrom" in char and int(char["level"]) > 10:
+        %           if "clogextradata" in char and int(char["level"]) > 10:
+        %               league = char["clogextradata"]["league"]
+        %               if len(league) > 15: 
+        %                   league = league[0:12] + "..."
+        %               end
         %               if first:
         %                   first = False
                             <tr><td>&nbsp;</td></tr>
@@ -36,11 +32,11 @@
                             <td>{{char["name"]}}</td>
                             <td>{{char["class"]}}</td>
                             <td>{{league}}</td>
-                            <td>{{char["levelfrom"]}}-{{char["level"]}}</td>
+                            <td>{{char["clogextradata"]["levelfrom"]}}-{{char["level"]}}</td>
                             <td><a href={{f'logs/{account}-{ch}.html'}}>Build Log</a></td>
-                            <td><input type="text" size=10 value='{{char["pcode"]}}' onClick="clipto()"/></td>
+                            <td><input type="text" size=10 value='{{char["clogextradata"]["pcode"]}}' onClick="clipto()"/></td>
                             <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
-                            <td>{{skillset}}</td>
+                            <td>{{char["clogextradata"]["skillset"]}}</td>
                         </tr>
         %           end
         %       end

@@ -28,9 +28,21 @@ for POEChar in POEChars:
         if updated:
             print("Updated")
         if char in accounts[account]:
-            root = makexml(account,char,chardata,accounts[account][char])
+            accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
         else:
-            root = makexml(account,char,chardata,{})
+            makexml(account,char,chardata)
+
+# remove old extradata fields
+for account in accounts:
+    for char in accounts[account]:
+        if "levelfrom" in accounts[account][char]:
+            del accounts[account][char]["levelfrom"]
+        if "league" in accounts[account][char]:
+            del accounts[account][char]["league"]
+        if "skillset" in accounts[account][char]:
+            del accounts[account][char]["skillset"]
+        if "pcode" in accounts[account][char]:
+            del accounts[account][char]["pcode"]
 
 with open(accountdb, 'w') as json_file:
     json.dump(accounts, json_file, indent=4)
