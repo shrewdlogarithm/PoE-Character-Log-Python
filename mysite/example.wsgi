@@ -19,4 +19,4 @@ if templates_dir not in bottle.TEMPLATE_PATH:
     bottle.TEMPLATE_PATH.insert(0, templates_dir)
   
 # import bottle application
-from bottle_app import application`
+from bottle_app import application
