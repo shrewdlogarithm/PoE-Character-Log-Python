@@ -27,10 +27,11 @@ for POEChar in POEChars:
                 updated=True
         if updated:
             print("Updated")
-        if char in accounts[account]:
-            accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
-        else:
-            makexml(account,char,chardata)
+        if account not in accounts:
+            accounts[account] = {}
+        if char not in accounts[account]:
+            accounts[account][char] = chardata[len(chardata)-1]["character"]
+        accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
 
 # remove old extradata fields
 for account in accounts:
