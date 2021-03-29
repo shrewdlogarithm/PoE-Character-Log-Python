@@ -48,7 +48,8 @@ It lags behind the Python version in features but it's data gathering is identic
 
 ## Running this on PythonAnywhere ##
 Clone this repo into PythonAnywhere and it should "just work"  
-Update: whilst this would, in theory, work on a free account, GGG recently changed how their API works and the site we need to access is not currently 'whitelisted' at PythonAnywhere.  I have asked the to add it - I'll update here when they respond to that...  
+
+_Update: whilst this would, in theory, work on a free account, GGG recently changed how their API works and the site we need to access is not currently 'whitelisted' at PythonAnywhere.  I have asked the to add it - I'll update here when they respond to that..._  
 Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json   
 
 To get the 'mysite' Bottle.py app working...  
