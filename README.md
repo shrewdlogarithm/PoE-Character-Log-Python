@@ -50,7 +50,7 @@ It lags behind the Python version in features but it's data gathering is identic
 Clone this repo into PythonAnywhere and it should "just work"  
 
 _Update: whilst this would, in theory, work on a free account, GGG recently changed how their API works and the site we need to access is not currently 'whitelisted' at PythonAnywhere.  I have asked the to add it - I'll update here when they respond to that..._  
-Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json   
+_Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json_  
 
 To get the 'mysite' Bottle.py app working...  
 - Create a new WebApp, choose "Manual Configuration" and "Python 3.8"  
