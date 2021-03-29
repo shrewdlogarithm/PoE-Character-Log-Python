@@ -3,9 +3,10 @@ from datetime import datetime
 from charparser import makelogs, makexml, tolog, mywait
 from bottle import template
 
+poesite = 'https://www.pathofexile.com'
 session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'})
-response = session.get('https://api.pathofexile.com')
+response = session.get(poesite)
 
 # these are default settings - run this script then edit settings.json to customize
 settings = {
@@ -61,7 +62,7 @@ while 1==1:
             tolog(f"Scanning Account {account}")
             if account not in accounts:
                 accounts[account] = {}
-            apichars = session.get(f"https://api.pathofexile.com/character-window/get-characters?accountName={account}&realm=pc")
+            apichars = session.get(f"{poesite}/character-window/get-characters?accountName={account}&realm=pc")
             if apichars.status_code != 200:
                 tolog(f'Error: failed to read characters for account {account}')
             else:
@@ -114,10 +115,10 @@ while 1==1:
                     tolog(f'Scanning Char {char["account"]} - {char["char"]}')
                     scantime = datetime.now()
                     dbname = f'data/{char["account"]}-{char["char"]}.json'
-                    passives = session.get(f'https://api.pathofexile.com/character-window/get-passive-skills?reqData=0&accountName={char["account"]}&realm=pc&character={char["char"]}')
+                    passives = session.get(f'{poesite}/character-window/get-passive-skills?reqData=0&accountName={char["account"]}&realm=pc&character={char["char"]}')
                     passivedb = passives.json()
                     payload = {'accountName':char["account"], 'character': char["char"]}
-                    items = session.get(url = 'https://api.pathofexile.com/character-window/get-items' , params = payload)
+                    items = session.get(url = f'{poesite}/character-window/get-items' , params = payload)
                     itemdb = items.json()
                     chardata = [{
                             "update": scantime,
