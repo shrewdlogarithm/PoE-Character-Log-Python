@@ -20,6 +20,7 @@ mysite/index.html
 pob/*
 accountdb.json
 settings.json
+*test*.py
 
 __pycache__/
 *.py[cod]
