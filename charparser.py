@@ -319,7 +319,7 @@ def makexml(account,char,chardata):
 
     return {
         "levelfrom": chardata[0]["character"]["level"],
-        "league": chardata[0]["character"]["league"],
+        "league": chardata[len(chardata)-1]["character"]["league"],
         "skillset": mainskills,
         "pcode": pcode
     }
