@@ -12,6 +12,8 @@ README.txt
 .vim*
 .virtualenvs/
 
+in-dev/*
+
 scan_all.log
 data/*.json
 logs/*.log
