@@ -47,8 +47,10 @@ https://github.com/shrewdlogarithm/PoE-Character-Log-PS
 It lags behind the Python version in features but it's data gathering is identical (JSON files can be interchanged between the PS and Python versions)
 
 ## Running this on PythonAnywhere ##
-Clone this repo into PythonAnywhere and it should "just work" - even on a 'free' account!  
-Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json   
+Clone this repo into PythonAnywhere and it should "just work"  
+
+_Update: whilst this would, in theory, work on a free account, GGG recently changed how their API works and the site we need to access is not currently 'whitelisted' at PythonAnywhere.  I have asked the to add it - I'll update here when they respond to that..._  
+_Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json_  
 
 To get the 'mysite' Bottle.py app working...  
 - Create a new WebApp, choose "Manual Configuration" and "Python 3.8"  
