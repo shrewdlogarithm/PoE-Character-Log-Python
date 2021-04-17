@@ -69,17 +69,7 @@ while 1==1:
                 apichardb = apichars.json()
                 for apichar in apichardb:
                     if apichar["name"] in accounts[account]:
-                        if "level" in accounts[account][apichar["name"]] and int(accounts[account][apichar["name"]]["level"]) > int(apichar["level"]):
-                            tolog (f'{apichar["name"]} has been rerolled - archiving old character data')
-                            archchar = archivedata(account,apichar["name"])
-                            accounts[account][archchar] = accounts[account][apichar["name"]]
-                            accounts[account][archchar]["name"] = archchar
-                            accounts[account][apichar["name"]] = {}
-                            toscan.append({
-                                "account": account,
-                                "char": apichar["name"]
-                            })
-                        elif int(apichar["level"]) < int(settings["maxlevel"]):
+                        if int(apichar["level"]) < int(settings["maxlevel"]):
                             if "experience" in accounts[account][apichar["name"]] and accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                                 if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
                                     tolog (f'{apichar["name"]} ({apichar["level"]}) has been active')
