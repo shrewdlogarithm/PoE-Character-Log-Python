@@ -1,7 +1,7 @@
 import base64,zlib,json,re,os,time,traceback
 from xml.dom import minidom
 
-POBTREEVER = "3_14"
+POBTREEVER = "3_15"
 
 def fixspec(strin):
     strin = strin.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
