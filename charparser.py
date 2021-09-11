@@ -245,6 +245,7 @@ def makexml(account,char,chardata):
                             gem.setAttribute("enabled","true")
                             skill.appendChild(gem)
                         skill.setAttribute("label",f"{level}-{skillset}")
+                        skill.setAttribute("slot",socketTrans[slot])
                         skill.setAttribute("enabled","true")
                         skills.appendChild(skill)
         itemset = root.createElement("ItemSet")
