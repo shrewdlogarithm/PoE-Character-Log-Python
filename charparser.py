@@ -187,6 +187,23 @@ def getbyname(attrs,attr,name):
             if "name" in at and at["name"] == name:
                 return at["values"][0][0]
 
+def getname(gem):
+    gem = re.sub('<[^>]+>', '', gem)
+    gem = gem.replace(" Support","")
+    gem = gem.replace("Anomalous ","")
+    gem = gem.replace("Divergent ","")
+    gem = gem.replace("Phantasmal ","")
+    return gem
+
+def abbrev(gem):
+    abb = gem.split()
+    if len(abb) > 2:
+        return abb[0][:1] + abb[1][:1] + abb[2][:1]
+    elif len(abb) > 1:
+        return abb[0][:2] + abb[1][:2]
+    else:
+        return abb[0][:4]
+
 def makexml(account,char,chardata):
     root = minidom.Document()
     pob = root.createElement('PathOfBuilding')
@@ -207,7 +224,7 @@ def makexml(account,char,chardata):
     pob.appendChild(items)
     skills = root.createElement("Skills")
     pob.appendChild(skills)
-    skilldb = []
+    skilldb = {}
     itemdb = {}
     lastset = {}
     itn = 1
@@ -226,28 +243,31 @@ def makexml(account,char,chardata):
             tree.appendChild(id)
         gemgroups = buildskills(chardata[e]["items"])
         mainskills = []
-        for slot in gemgroups:
+        for slot in gemgroups:            
             skill = root.createElement("Skill")
+            skillset = ""
             for group in gemgroups[slot]:
                 if (len(group["supports"]) > 0):
                     for gm in group["gems"]:
-                        mainskills.append("[" + str(len(group["supports"])) + "] " + re.sub('<[^>]+>', '', gm))
+                        mainskills.append("[" + str(len(group["supports"])) + "] " + getname(gm))
                 if len(group["gems"]) > 0:
-                    skillset = " ".join(sorted(group["gems"])) + " " + ",".join(sorted(group["supports"]))
-                    skillset = re.sub('<[^>]+>', '', skillset).replace(" Support","")
-                    if skillset not in skilldb:
-                        skilldb.append(skillset)
-                        for gm in group["gems"]+group["supports"]:
-                            gem = root.createElement("Gem")
-                            gem.setAttribute("level","1")
-                            gem.setAttribute("nameSpec",re.sub('<[^>]+>', '',gm.replace(" Support","")))
-                            gem.setAttribute("quality","0")
-                            gem.setAttribute("enabled","true")
-                            skill.appendChild(gem)
-                        skill.setAttribute("label",f"{level}-{skillset}")
-                        skill.setAttribute("slot",socketTrans[slot])
-                        skill.setAttribute("enabled","true")
-                        skills.appendChild(skill)
+                    for mg in sorted(group["gems"]):
+                        skillset += "," + getname(mg)
+                    for sg in sorted(group["supports"]):
+                        skillset += "+" + abbrev(getname(sg))
+                    for gm in group["gems"]+group["supports"]:
+                        gem = root.createElement("Gem")
+                        gem.setAttribute("level","1")
+                        gem.setAttribute("nameSpec",getname(gm))
+                        gem.setAttribute("quality","0")
+                        gem.setAttribute("enabled","true")
+                        skill.appendChild(gem)
+            if skillset != "" and (slot not in skilldb or skillset not in skilldb[slot]):
+                skill.setAttribute("label",f"{level}{skillset}")
+                skill.setAttribute("slot",socketTrans[slot])
+                skill.setAttribute("enabled","true")
+                skills.appendChild(skill)
+                skilldb[slot] = skillset
         itemset = root.createElement("ItemSet")
         itemset.setAttribute("id",str(isn))
         itemset.setAttribute("useSecondWeaponSet","nil")
