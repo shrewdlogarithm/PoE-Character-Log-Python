@@ -80,13 +80,31 @@ def buildskills(items):
             gemgroups[slot] = gemobjs
             if "socketedItems" in item:
                 for gem in range(0,len(item["socketedItems"])):
+                    gqual = "0"
+                    glvl = "1"
+                    for prop in item["socketedItems"][gem]["properties"]:
+                        if prop["name"] == "Quality":
+                            gqual = re.findall(r'-?\d+\.?\d*', prop["values"][0][0])[0]
+                        elif prop["name"] == "Level":
+                            glvl = re.findall(r'-?\d+\.?\d*', prop["values"][0][0])[0]
                     group = item["sockets"][gem]["group"]
                     if item["socketedItems"][gem]["colour"] and item["socketedItems"][gem]["typeLine"]:
-                        gemstr = "<a class=gem" + item["socketedItems"][gem]["colour"] + " href=\"https://pathofexile.gamepedia.com/" + item["socketedItems"][gem]["typeLine"].replace(" ","_") + "\">" + item["socketedItems"][gem]["typeLine"] + "</a>"
+                        gemstr = {
+                            "color": item["socketedItems"][gem]["colour"],
+                            "name": item["socketedItems"][gem]["typeLine"],
+                            "quality": gqual,
+                            "level": glvl
+                        }
                     elif  item["socketedItems"][gem]["typeLine"]:
-                        gemstr = item["socketedItems"][gem]["typeLine"]
+                        gemstr = {
+                            "name": item["socketedItems"][gem]["typeLine"],
+                            "quality": gqual,
+                            "level": glvl
+                        }
                     else:
-                        gemstr = "Unknown Gem!"
+                        gemstr = {
+                            "name": "Unknown Gem!"
+                        }
                     if " Support" in item["socketedItems"][gem]["typeLine"] or ("support" in item["socketedItems"][gem] and item["socketedItems"][gem]["support"]):
                         gemgroups[slot][group]["supports"].append(gemstr)
                     else:
@@ -98,12 +116,20 @@ def getskills(items):
     gemgroups = buildskills(items)
     for slot in gemgroups:
         for group in gemgroups[slot]:
-            #for gem in sorted(group["gems"]):
-            #    ret.append(gem)
-            #for gem in sorted(group["supports"]):
-            #    ret.append(f'{gem} >> {" ".join(group["gems"])}')
             if len(group["gems"]) > 0 or len(group["supports"]) > 0:
-                ret.append(" | ".join(group["gems"]) + " >> " + " | ".join(group["supports"]))
+                gms = []
+                for gm in group["gems"]:
+                    if "color" in gm:
+                        gms.append("<a class=gem" + gm["color"] + " href=\"https://pathofexile.gamepedia.com/" + gm["name"].replace(" ","_") + "\">" + gm["name"] + "</a>")
+                    else:
+                        gms.append(gm["name"])
+                sps = []
+                for gm in group["supports"]:
+                    if "color" in gm:
+                        sps.append("<a class=gem" + gm["color"] + " href=\"https://pathofexile.gamepedia.com/" + gm["name"].replace(" ","_") + "\">" + gm["name"] + "</a>")
+                    else:
+                        sps.append(gm["name"])
+                ret.append(" | ".join(gms) + " >> " + " | ".join(sps))
     return ret
 
 def showchanges(before, after, bpref, apref):
@@ -188,7 +214,7 @@ def getbyname(attrs,attr,name):
                 return at["values"][0][0]
 
 def getname(gem):
-    gem = re.sub('<[^>]+>', '', gem)
+    gem = gem["name"]
     gem = gem.replace(" Support","")
     gem = gem.replace("Anomalous ","")
     gem = gem.replace("Divergent ","")
@@ -251,15 +277,15 @@ def makexml(account,char,chardata):
                     for gm in group["gems"]:
                         mainskills.append("[" + str(len(group["supports"])) + "] " + getname(gm))
                 if len(group["gems"]) > 0:
-                    for mg in sorted(group["gems"]):
+                    for mg in sorted(group["gems"], key=lambda k: k['name']): # sorted([x["name"] for x in group["gems"]])
                         skillset += "," + getname(mg)
-                    for sg in sorted(group["supports"]):
+                    for sg in sorted(group["supports"], key=lambda k: k["name"]): # sorted([x["name"] for x in group["supports"]])
                         skillset += "+" + abbrev(getname(sg))
                     for gm in group["gems"]+group["supports"]:
                         gem = root.createElement("Gem")
-                        gem.setAttribute("level","1")
+                        gem.setAttribute("level",gm["level"])
                         gem.setAttribute("nameSpec",getname(gm))
-                        gem.setAttribute("quality","0")
+                        gem.setAttribute("quality",gm["quality"])
                         gem.setAttribute("enabled","true")
                         skill.appendChild(gem)
             if skillset != "" and (slot not in skilldb or skillset not in skilldb[slot]):
@@ -332,7 +358,6 @@ def makexml(account,char,chardata):
         tolog("Unexpected error during XML to pastecode conversion")
         track = traceback.format_exc()
         tolog(track)
-        mywait(settings["longsleep"])
 
 
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
