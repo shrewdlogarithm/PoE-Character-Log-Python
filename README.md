@@ -41,6 +41,11 @@ http://poeclog.pythonanywhere.com
 rebuildlogxml re-creates all log/html/xml files  
 This can be useful to update older characters when changes are made to the parsing/output
 
+## Known Issues ##
+If someone creates multiple characters with the same name, data from all those characters will be gathered into a single .json file
+This means PoB output etc. will be nonsensical - but I'm also not really sure what to do with this right now so...
+The only person who really does this is Zizaran - try to die less than he does perhaps? :)
+
 ## Notes ##
 There is  a Powershell version of this for desktop use/people who don't want to install Python  
 https://github.com/shrewdlogarithm/PoE-Character-Log-PS  
