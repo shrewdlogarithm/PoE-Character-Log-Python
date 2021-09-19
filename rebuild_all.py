@@ -18,15 +18,18 @@ for POEChar in POEChars:
     account,char = os.path.basename(POEChar).replace(".json","").split("-")
 
     with open(POEChar, encoding='utf-8') as json_file:
-        chardata = json.load(json_file)
         print(f'{account} - {char}')
-        for i in range(1,len(chardata)):
-            makelogs(account,char, chardata[i-1], chardata[i])
-        if account not in accounts:
-            accounts[account] = {}
-        if char not in accounts[account]:
-            accounts[account][char] = chardata[len(chardata)-1]["character"]
-        accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
+        try:
+            chardata = json.load(json_file)
+            for i in range(1,len(chardata)):
+                makelogs(account,char, chardata[i-1], chardata[i])
+            if account not in accounts:
+                accounts[account] = {}
+            if char not in accounts[account]:
+                accounts[account][char] = chardata[len(chardata)-1]["character"]
+            accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
+        except:
+            print("Error parsing character")
 
 with open(accountdb, 'w') as json_file:
     json.dump(accounts, json_file, indent=4)
