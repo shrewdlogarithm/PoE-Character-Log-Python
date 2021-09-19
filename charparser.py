@@ -95,20 +95,10 @@ def buildskills(items):
                             "quality": gqual,
                             "level": glvl
                         }
-                    elif  item["socketedItems"][gem]["typeLine"]:
-                        gemstr = {
-                            "name": item["socketedItems"][gem]["typeLine"],
-                            "quality": gqual,
-                            "level": glvl
-                        }
-                    else:
-                        gemstr = {
-                            "name": "Unknown Gem!"
-                        }
-                    if " Support" in item["socketedItems"][gem]["typeLine"] or ("support" in item["socketedItems"][gem] and item["socketedItems"][gem]["support"]):
-                        gemgroups[slot][group]["supports"].append(gemstr)
-                    else:
-                        gemgroups[slot][group]["gems"].append(gemstr)
+                        if " Support" in item["socketedItems"][gem]["typeLine"] or ("support" in item["socketedItems"][gem] and item["socketedItems"][gem]["support"]):
+                            gemgroups[slot][group]["supports"].append(gemstr)
+                        else:
+                            gemgroups[slot][group]["gems"].append(gemstr)
     return gemgroups
 
 def getskills(items):
@@ -351,7 +341,7 @@ def makexml(account,char,chardata):
                     isn = isn + 1
                 lastset[iid] = itemno
     
-    mainskills = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills[0:4]),reverse=True)))
+    mainskills = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills),reverse=True)))
     try:
         pcode = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
     except Exception as e:
