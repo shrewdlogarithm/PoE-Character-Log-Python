@@ -1,4 +1,4 @@
-import glob,json,os
+import glob,json,os,traceback
 from charparser import makelogs,makexml
 
 accountdb = "accountdb.json"
@@ -28,8 +28,13 @@ for POEChar in POEChars:
             if char not in accounts[account]:
                 accounts[account][char] = chardata[len(chardata)-1]["character"]
             accounts[account][char]["clogextradata"] = makexml(account,char,chardata)
-        except:
+        except Exception as e:
             print("Error parsing character")
+            track = traceback.format_exc()
+            print(track)
+
+        except:
+            print
 
 with open(accountdb, 'w') as json_file:
     json.dump(accounts, json_file, indent=4)

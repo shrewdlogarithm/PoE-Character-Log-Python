@@ -342,6 +342,9 @@ def makexml(account,char,chardata):
                 lastset[iid] = itemno
     
     mainskills = re.sub("\[[0-9]*\] ","","  ".join(sorted(set(mainskills),reverse=True)))
+    if len(mainskills) > 75:
+        mainskills = mainskills[0:75] + "..."
+
     try:
         pcode = base64.b64encode(zlib.compress(root.toxml().encode('ascii')),altchars=b"-_").decode("ascii")
     except Exception as e:
