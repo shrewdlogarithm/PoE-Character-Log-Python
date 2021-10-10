@@ -2,6 +2,7 @@ import os,requests,json,traceback
 from datetime import datetime
 from charparser import makelogs, makexml, tolog, mywait
 from bottle import template
+import utils
 
 poesite = 'https://www.pathofexile.com'
 session = requests.Session()
@@ -17,7 +18,6 @@ settings = {
     "minlevel": 10      # ignore new characters above this level
 }
 
-accountdb = "accountdb.json"
 accounts = {}
 
 def archivedata(account,char):
@@ -45,8 +45,8 @@ while 1==1:
         tolog("Error: settings file invalid or corrupted")
 
     try:
-        if os.path.exists(accountdb):
-            with open(accountdb) as json_file:
+        if os.path.exists(utils.accountdb):
+            with open(utils.accountdb) as json_file:
                 accounts = json.load(json_file)
     except:
         tolog(f'Error: accountdb file invalid or corrupted')
@@ -146,7 +146,7 @@ while 1==1:
             tolog(track)
             mywait(settings["longsleep"])
            
-        with open(accountdb, 'w') as json_file:
+        with open(utils.accountdb, 'w') as json_file:
             json.dump(accounts, json_file, indent=4)
 
         mywait(settings["shortsleep"])
