@@ -7,12 +7,7 @@ mysite = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 @route('/')
 def index():
-    accountdb = f'{mysite}/accountdb.json'
-    accounts = {}
-    if os.path.exists(accountdb):
-        with open(accountdb) as json_file:
-            accounts = json.load(json_file)
-            return template(f'index.tpl',{"accounts": accounts})
+    return template(f'index.tpl')
 
 @route('/data/<filename>')
 def server_static(filename):
@@ -21,10 +16,6 @@ def server_static(filename):
 @route('/css/<filename>')
 def server_static(filename):
     return static_file(filename, root=f'{mysite}/css')
-
-@route('/logs/<filename>.log')
-def server_static(filename):
-    return static_file('{}.log'.format(filename), root=f'{mysite}/logs', mimetype='text/plain')
 
 @route('/logs/<filename>')
 def server_static(filename):

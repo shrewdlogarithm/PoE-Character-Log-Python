@@ -18,7 +18,6 @@ for POEChar in POEChars:
     account,char = os.path.basename(POEChar).replace(".json","").split("-")
 
     with open(POEChar, encoding='utf-8') as json_file:
-        print(f'{account} - {char}')
         try:
             chardata = json.load(json_file)
             for i in range(1,len(chardata)):
@@ -33,9 +32,5 @@ for POEChar in POEChars:
             track = traceback.format_exc()
             print(track)
 
-        except:
-            print
-
 with open(accountdb, 'w') as json_file:
     json.dump(accounts, json_file, indent=4)
-

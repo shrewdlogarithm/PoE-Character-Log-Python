@@ -1,5 +1,6 @@
 import base64,zlib,json,re,os,time,traceback
 from xml.dom import minidom
+import utils
 
 POBTREEVER = "3_15"
 
@@ -27,7 +28,7 @@ def tolog(out):
 def mywait(mytime):
     time.sleep(mytime)
 
-with open('passive-skill-tree.json') as json_file:
+with open(utils.base_path + 'passive-skill-tree.json') as json_file:
     passivedb = json.load(json_file)
 
 def getpassives(passives):
