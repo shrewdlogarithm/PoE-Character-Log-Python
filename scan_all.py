@@ -9,15 +9,6 @@ session = requests.Session()
 session.headers.update({'User-Agent': 'POEClog'})
 response = session.get(poesite)
 
-# these are default settings - run this script then edit settings.json to customize
-settings = {
-    "toscan": [],
-    "shortsleep": 1,    # min. seconds between API requests - avoid hitting the rate-limit
-    "longsleep": 120,   # min. seconds between scans and after errors such as PoE being down etc.
-    "maxlevel": 90,     # ignore characters at this level or higher
-    "minlevel": 10      # ignore new characters above this level
-}
-
 accounts = {}
 
 def archivedata(account,char):
@@ -34,15 +25,7 @@ def archivedata(account,char):
 
 while 1==1:
 
-    try: 
-        if os.path.exists("settings.json"):
-            with open("settings.json") as json_file:
-                settings = json.load(json_file)
-        else:
-            with open("settings.json", 'w') as json_file:
-                json.dump(settings, json_file, indent=4)
-    except:
-        tolog("Error: settings file invalid or corrupted")
+    utils.loadopt()
 
     try:
         if os.path.exists(utils.accountdb):
@@ -54,7 +37,7 @@ while 1==1:
         with open("mysite/index.html","w", encoding="utf-8") as webfile:
             webfile.write(template("mysite/index.tpl",{"accounts": accounts}))
 
-    for account in settings["toscan"]:
+    for account in utils.getopt("toscan"):
 
         toscan = []
 
@@ -69,7 +52,7 @@ while 1==1:
                 apichardb = apichars.json()
                 for apichar in apichardb:
                     if apichar["name"] in accounts[account]:
-                        if int(apichar["level"]) < int(settings["maxlevel"]):
+                        if int(apichar["level"]) < int(utils.getopt("maxlevel")):
                             if "experience" in accounts[account][apichar["name"]] and accounts[account][apichar["name"]]["experience"] != apichar["experience"]:
                                 if os.path.exists(f'data/{account}-{apichar["name"]}.json'):
                                     tolog (f'{apichar["name"]} ({apichar["level"]}) has been active')
@@ -87,14 +70,14 @@ while 1==1:
                                 "account": account,
                                 "char": apichar["name"]
                             })
-                        elif int(apichar["level"]) < int(settings["minlevel"]):
+                        elif int(apichar["level"]) < int(utils.getopt("minlevel")):
                             tolog (f'{apichar["name"]} ({apichar["level"]}) is new!')
                             toscan.append({
                                 "account": account,
                                 "char": apichar["name"]
                             })
                         else:
-                            tolog (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {settings["minlevel"]} - ignoring')
+                            tolog (f'{apichar["name"]} ({apichar["level"]}) is new but over Level {utils.getopt("minlevel")} - ignoring')
                     if apichar["name"] in accounts[account] and "clogextradata" in accounts[account][apichar["name"]] and os.path.exists(f'data/{account}-{apichar["name"]}.json'):
                         apichar["clogextradata"] = accounts[account][apichar["name"]]["clogextradata"]
                     accounts[account][apichar["name"]] = apichar
@@ -138,17 +121,17 @@ while 1==1:
                     tolog("Error during Character Scan")
                     track = traceback.format_exc()
                     tolog(track)
-                    mywait(settings["longsleep"])
+                    mywait(utils.getopt("longsleep"))
 
         except:
             tolog("Error during Account Scan")
             track = traceback.format_exc()
             tolog(track)
-            mywait(settings["longsleep"])
+            mywait(utils.getopt("longsleep"))
            
         with open(utils.accountdb, 'w') as json_file:
             json.dump(accounts, json_file, indent=4)
 
-        mywait(settings["shortsleep"])
+        mywait(utils.getopt("shortsleep"))
 
-    mywait(settings["longsleep"])
+    mywait(utils.getopt("longsleep"))

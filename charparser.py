@@ -2,8 +2,6 @@ import base64,zlib,json,re,os,time,traceback
 from xml.dom import minidom
 import utils
 
-POBTREEVER = "3_15"
-
 def fixspec(strin):
     strin = strin.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
     strin = strin.replace(chr(228),"a") # umlaut 'a' as in Doppelganger
@@ -28,7 +26,7 @@ def tolog(out):
 def mywait(mytime):
     time.sleep(mytime)
 
-with open(utils.base_path + 'passive-skill-tree.json') as json_file:
+with open(utils.base_path + 'passive-skill-tree' + utils.getopt("POBTREEVER") + '.json') as json_file:
     passivedb = json.load(json_file)
 
 def getpassives(passives):
@@ -255,7 +253,7 @@ def makexml(account,char,chardata):
             id.setAttribute("title",f'{e} - Level {chardata[e]["character"]["level"]}')
             id.setAttribute("ascendClassId",str(chardata[e]["character"]["ascendancyClass"]))
             id.setAttribute("nodes",nodes)
-            id.setAttribute("treeVersion",POBTREEVER)
+            id.setAttribute("treeVersion",utils.getopt("POBTREEVER"))
             id.setAttribute("classId",str(chardata[e]["character"]["classId"]))
             tree.appendChild(id)
         gemgroups = buildskills(chardata[e]["items"])
