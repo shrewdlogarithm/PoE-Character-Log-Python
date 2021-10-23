@@ -1,12 +1,11 @@
 % import os,json
-% import utils
-% if os.path.exists(utils.accountdb):
-%   with open(utils.accountdb) as json_file:
+% if os.path.exists("accountdb.json"):
+%   with open("accountdb.json") as json_file:
 %     accounts = json.load(json_file)
 
 <html>
     <head>
-        <title>{{utils.homep}}</title>
+        <title>PoEClog</title>
         <script>
             function clipto() {
                 document.execCommand("selectall",null,false);
@@ -16,8 +15,8 @@
         <link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/poe.css">
     </head>
     <body>
-    <h2>{{utils.homep}}</h2>
-    <h3>Questions/Issues/Ideas - <a href="https://github.com/shrewdlogarithm/{{utils.homep}}">click here</a></h3>
+    <h2>PoEClog</h2>
+    <h3>Questions/Issues/Ideas - <a href="https://github.com/shrewdlogarithm/PoE-Character-Log-Python">click here</a></h3>
     <P>
         <table>
         %   for account in sorted(accounts, key=str.casefold):
@@ -48,7 +47,6 @@
         %       end
         %   end
         </table>
-    <h3>Questions/Issues/Ideas - <a href="https://github.com/shrewdlogarithm/{{utils.homep}}">click here</a></h3>
-    <p><a href="{{utils.homep}}">Version: {{utils.vers}}</a></p>
+    <h3>Questions/Issues/Ideas - <a href="https://github.com/shrewdlogarithm/PoE-Character-Log-Python">click here</a></h3>
     </body>
 </html>
