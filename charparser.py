@@ -355,9 +355,12 @@ def makexml(account,char,chardata):
     with open(f"pob/builds/{account}-{char}.xml", 'w') as f:
         f.write(root.toprettyxml(indent ="\t"))
 
+    pobtreever = utils.getopt("POBTREEVER")
+    if "POBTREEVER" in chardata[len(chardata)-1]:
+        pobtreever = chardata[len(chardata)-1]["POBTREEVER"]
     return {
         "levelfrom": chardata[0]["character"]["level"],
-        "POBTREEVER": utils.getopt("POBTREEVER"),
+        "POBTREEVER": pobtreever,
         "skillset": mainskills,
         "pcode": pcode
     }

@@ -97,7 +97,8 @@ while 1==1:
                             "update": scantime,
                             "character": itemdb["character"],
                             "items": [],
-                            "passives": []
+                            "passives": [],
+                            "POBTREEVER": utils.getopt("POBTREEVER")
                     }]
                     if os.path.exists(dbname):
                         with open(dbname) as json_file:
@@ -106,7 +107,8 @@ while 1==1:
                             "update": scantime,
                             "character": itemdb["character"],
                             "items": itemdb["items"],
-                            "passives": passivedb["hashes"]
+                            "passives": passivedb["hashes"],
+                            "POBTREEVER": utils.getopt("POBTREEVER")
                     })
 
                     if len(chardata) > 1:
