@@ -24,7 +24,7 @@
         %       for ch in accounts[account]:
         %           char = accounts[account][ch]
         %           if "clogextradata" in char and int(char["level"]) > 10:
-        %               league = char["clogextradata"]["league"]
+        %               league = char["league"]
         %               if len(league) > 15: 
         %                   league = league[0:12] + "..."
         %               end

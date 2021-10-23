@@ -357,7 +357,7 @@ def makexml(account,char,chardata):
 
     return {
         "levelfrom": chardata[0]["character"]["level"],
-        "league": chardata[len(chardata)-1]["character"]["league"],
+        "POBTREEVER": utils.getopt("POBTREEVER"),
         "skillset": mainskills,
         "pcode": pcode
     }
