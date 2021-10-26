@@ -6,10 +6,18 @@
 <html>
     <head>
         <title>PoEClog</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
         <script>
             function clipto() {
+                var oldc = $(this).val()
+                $(this).val($(this).data("pcode"))
                 document.execCommand("selectall",null,false);
                 document.execCommand('copy');
+                $(this).val("Pastecode Copied")
+                setTimeout($.proxy(function() {
+                    $(this).val(oldc)
+                },this), 600);
+                
             }
         </script>
         <link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/poe.css">
@@ -39,7 +47,7 @@
                             <td>{{league}}</td>
                             <td>{{char["clogextradata"]["levelfrom"]}}-{{char["level"]}}</td>
                             <td><a href={{f'logs/{account}-{ch}.html'}}>Build Log</a></td>
-                            <td><input type="text" size=10 value='{{char["clogextradata"]["pcode"]}}' onClick="clipto()"/></td>
+                            <td><input type="text" readonly size=13 value='Click for Pastecode' onClick="clipto.call(this)" data-pcode='{{char["clogextradata"]["pcode"]}}'/></td>
                             <td><a href={{f'pob/builds/{account}-{ch}.xml'}}>XML</a></td>
                             <td>{{char["clogextradata"]["skillset"]}}</td>
                         </tr>
