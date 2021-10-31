@@ -229,6 +229,9 @@ def makexml(account,char,chardata):
     build.setAttribute('className',className[chardata[len(chardata)-1]["character"]["classId"]])
     build.setAttribute('ascendClassName',ascendName[chardata[len(chardata)-1]["character"]["classId"]][chardata[len(chardata)-1]["character"]["ascendancyClass"]])
     build.setAttribute("viewMode","ITEMS")
+    # add a dummy playerstat node because PoB's XML parser doesn't read "empty" Build nodes correctly
+    dummyplayerstat = root.createElement("PlayerStat")
+    build.appendChild(dummyplayerstat)
     pob.appendChild(build)
     tree = root.createElement('Tree')
     tree.setAttribute('activeSpec', '1')
@@ -244,12 +247,15 @@ def makexml(account,char,chardata):
     lastset = {}
     itn = 1
     isn = 1
+    lltree = 0
     for e in range(0,len(chardata)):
         level = chardata[e]["character"]["level"]
         lastnodes = ",".join(str(node) for node in chardata[e-1]["passives"])
         nodes = ",".join(str(node) for node in chardata[e]["passives"])
-        if nodes != lastnodes:
+        #if nodes != lastnodes:
+        if chardata[e]["character"]["level"] - lltree >= 5 or len(chardata)-e <= 1:
             id = root.createElement("Spec")
+            lltree = chardata[e]["character"]["level"]
             id.setAttribute("title",f'{e} - Level {chardata[e]["character"]["level"]}')
             id.setAttribute("ascendClassId",str(chardata[e]["character"]["ascendancyClass"]))
             id.setAttribute("nodes",nodes)
