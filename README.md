@@ -35,8 +35,6 @@ XML - a Path-of-Building-compatible savefile
 ## Other stuff ##
 The "mysite" directory contains a Bottle.py application which creates a webpage summarizing all the accounts/characters tracked  
 This also includes PoB "build codes" which can be pasted into PoB directly  
-To see an example of this, this site tracks popular PoE streamers  
-http://poeclog.pythonanywhere.com
 
 rebuildlogxml re-creates all log/html/xml files  
 This can be useful to update older characters when changes are made to the parsing/output
@@ -46,17 +44,8 @@ If someone creates multiple characters with the same name, data from all those c
 This means PoB output etc. will be nonsensical - but I'm also not really sure what to do with this right now so...
 The only person who really does this is Zizaran - try to die less than he does perhaps? :)
 
-## Notes ##
-There is  a Powershell version of this for desktop use/people who don't want to install Python  
-https://github.com/shrewdlogarithm/PoE-Character-Log-PS  
-It lags behind the Python version in features but it's data gathering is identical (JSON files can be interchanged between the PS and Python versions)
-
 ## Running this on PythonAnywhere ##
-Clone this repo into PythonAnywhere and it should "just work"  
-
-_Update: whilst this would, in theory, work on a free account, GGG recently changed how their API works and the site we need to access is not currently 'whitelisted' at PythonAnywhere.  I have asked the to add it - I'll update here when they respond to that..._  
-_Note: CPU limits on free accounts mean you won't be able to track more than 1 or 2 characters and/or may need to increase the pause between scans (Longwait) in settings.json_  
-
+Clone this repo into PythonAnywhere and it should run as-is
 To get the 'mysite' Bottle.py app working...  
 - Create a new WebApp, choose "Manual Configuration" and "Python 3.8"  
 - Then, edit the WSGI and copy the code from [this file](mysite/example.wsgi)  
