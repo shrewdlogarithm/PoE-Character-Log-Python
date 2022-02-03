@@ -12,6 +12,8 @@ README.txt
 .vim*
 .virtualenvs/
 
+.vscode/*
+
 in-dev/*
 
 scan_all.log

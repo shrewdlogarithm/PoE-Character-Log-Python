@@ -1,0 +1,11 @@
+How to update for a new league/patch
+-------------------------------------------------------
+
+The passive-skill-tree[patch].json files contain code taken from the official GGG PoE Passive Skill Tree webpage 
+
+'Show Page Source' and search for 'Orbit": 0' and take that entire JSON branch as per the existing files - make sure it's syntax/bracket-correct!
+
+The current league code (e.g. 3_17)  is stored in utils.py and should also be updated at launch
+
+Note: this data is ONLY used to turn node codes into node names - only in English at this point
+Note: the league code is also embedded into PoB files to ensure it chooses the correct passive tree
