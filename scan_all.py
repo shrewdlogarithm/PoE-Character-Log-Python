@@ -23,9 +23,19 @@ def archivedata(account,char):
         os.rename(f'pob/builds/{account}-{char}.xml',f'pob/builds/{account}-{char}DEL{rrdate}.xml')
     return f'{char}DEL{rrdate}'
 
+first = True
+
 while 1==1:
 
     utils.loadopt()
+
+    if utils.getopt("stop"):
+        break
+
+    if first:
+        first = False
+    else:
+        mywait(utils.getopt("longsleep"))
 
     try:
         if os.path.exists(utils.accountdb):
@@ -135,5 +145,3 @@ while 1==1:
             json.dump(accounts, json_file, indent=4)
 
         mywait(utils.getopt("shortsleep"))
-
-    mywait(utils.getopt("longsleep"))
