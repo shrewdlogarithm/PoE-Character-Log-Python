@@ -5,15 +5,18 @@ import utils
 def fixspec(strin):
     strin = strin.replace(chr(246),"o") # diaresis 'o' as in Maelstrom
     strin = strin.replace(chr(228),"a") # umlaut 'a' as in Doppelganger
+    strin = strin.replace(chr(237),"i") # accent i from Spanis#
     specchar = re.search(r"...[\x80-\xff]...",strin)
     if specchar:
-        tolog("Special Character encountered " + specchar.group() + " - Charcode " + str(ord(specchar.group()[3:4])))
+        tolog("Special Character encountered " + specchar.group() + " - Charcode " + str(ord(specchar.group()[3:4])),False)
         strin = re.sub(r"[\x80-\xff]","?",strin)            
     return strin
 
-def tolog(out):
+def tolog(out,fix = True):
     if out:
-        out = fixspec(out).rstrip()
+        if fix:
+            out = fixspec(out)
+        out = out.rstrip()
         try:
             print(out)
             with open("scan_all.log", 'a', encoding="utf-8") as logout:
