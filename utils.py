@@ -11,7 +11,7 @@ defaultoptions = {
     "longsleep": 120,   # min. seconds between scans and after errors such as PoE being down etc.
     "maxlevel": 90,     # ignore characters at this level or higher
     "minlevel": 10,      # ignore new characters above this level
-    "POBTREEVER": "3_17" # league tag for PoB and passive-tree
+    "POBTREEVER": "3_18" # league tag for PoB and passive-tree
 }
 
 def getopt(opt):
